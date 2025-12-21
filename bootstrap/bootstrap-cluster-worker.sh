@@ -24,6 +24,7 @@ echo " - Waiting for Talos worker to be ready..."
 echo " - Press any key to continue..."
 read -n 1 -s
 
+echo " - Waiting 10s for overview of nodes..."
 sleep 10
 
 kubectl get nodes

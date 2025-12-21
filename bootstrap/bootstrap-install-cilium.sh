@@ -6,12 +6,12 @@ usage() {
 }
 
 clusterName=$1
-configPath=state/$clusterName
+configPath=../cluster-state/$clusterName
 
 echo "Installing Cilium as a pre-requisite CNI for cluster:"
-kubectl apply -f $configPath/infra
+kubectl apply -f $configPath/infra/cilium.yaml
 
 echo " - Waiting for rollout to complete..."
-kubectl rollout status daemonset/cilium
-kubectl rollout status daemonset/cilium-envoy
-kubectl rollout status deployment/cilium-operator
+kubectl rollout status daemonset/cilium -n kube-system
+kubectl rollout status daemonset/cilium-envoy -n kube-system
+kubectl rollout status deployment/cilium-operator -n kube-system
