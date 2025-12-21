@@ -16,6 +16,8 @@ pass-cli login
 export GITHUB_TOKEN=$(pass-cli item view --vault-name Personal --item-title "Github PAT (finegrained) for Talos flux" --field Secret)
 export GITHUB_USER=ChristianTrolleMikkelsen
 
+kubectl get pods -A
+
 flux bootstrap github \
   --owner=$GITHUB_USER \
   --repository=talos-workbench \

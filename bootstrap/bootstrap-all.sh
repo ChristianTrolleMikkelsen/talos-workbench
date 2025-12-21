@@ -9,4 +9,5 @@ cd ../bootstrap
 ./bootstrap-cluster-worker.sh $clusterName "$3"
 ./bootstrap-cluster-worker.sh $clusterName "$4"
 ./bootstrap-assign-worker-node-roles.sh $clusterName
+./bootstrap-install-cilium.sh $clusterName
 ./bootstrap-install-fluxcd.sh $clusterName

@@ -24,13 +24,6 @@ echo " - Waiting for Talos worker to be ready..."
 echo " - Press any key to continue..."
 read -n 1 -s
 
-while true; do
-  current_node_count=$(kubectl get nodes --no-headers | wc -l)
-  if [[ $current_node_count -ge 1 ]]; then
-    echo " - Worker node appeared."
-    break
-  else
-    echo " - Waiting for worker node..."
-    sleep 5
-  fi
-done
+sleep 10
+
+kubectl get nodes

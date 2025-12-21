@@ -34,13 +34,6 @@ export KUBECONFIG=$(pwd)/kubeconfig
 
 echo " - Talosconfig after bootstrap and kubeconfig export: $TALOSCONFIG"
 
-while true; do
-  current_node_count=$(kubectl get nodes --no-headers | wc -l)
-  if [[ $current_node_count -ge 0 ]]; then
-    echo " - Cpl node appeared."
-    break
-  else
-    echo " - Waiting for cpl node..."
-    sleep 5
-  fi
-done
+echo " - Waiting 10s for overview of nodes..."
+sleep 10
+kubectl get nodes
