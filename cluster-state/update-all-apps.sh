@@ -1,10 +1,10 @@
 #!/bin/bash
 appDir="apps-templates"
 
-echo "Updating helm repos"
+echo "Updating apps"
+echo " - Updating helm repos"
 helm repo update > /dev/null
 
-echo "Generating templates for apps"
 mkdir -p $appDir
 
 for folder in "."/*; do
@@ -12,7 +12,7 @@ for folder in "."/*; do
     folder_name=$(basename "$folder")
 
     if [ "$folder_name" != "$appDir" ]; then
-        echo "Updating environment: $folder"
+        echo "  - Updating environment: $folder"
         mkdir -p "$folder/apps"
         cp -rf "$appDir"/* "$folder/apps"
     fi   

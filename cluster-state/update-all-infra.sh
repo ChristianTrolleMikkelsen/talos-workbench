@@ -1,11 +1,12 @@
 #!/bin/bash
 infraDir="infra-templates"
 
-echo "Updating helm repos"
+echo "Updating infra components"
+echo " - Updating helm repos"
 helm repo add cilium https://helm.cilium.io/ > /dev/null
 helm repo update > /dev/null
 
-echo "Generating templates for infrastructure components"
+echo " - Generating templates for infrastructure components"
 mkdir -p $infraDir
 helm template \
     cilium \
@@ -24,7 +25,7 @@ for folder in "."/*; do
     folder_name=$(basename "$folder")
 
     if [ "$folder_name" != "$infraDir" ]; then
-        echo "Updating environment: $folder"
+        echo "   - Updating environment: $folder"
         mkdir -p "$folder/infra"
         cp -rf "$infraDir"/* "$folder/infra"
     fi   
