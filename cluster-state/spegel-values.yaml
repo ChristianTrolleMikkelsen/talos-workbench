@@ -1,0 +1,4 @@
+# https://github.com/spegel-org/spegel/blob/main/charts/spegel/values.yaml
+---
+spegel:
+  containerdRegistryConfigPath: /etc/cri/conf.d/hosts # https://github.com/spegel-org/spegel/blob/main/docs/COMPATIBILITY.md#talos

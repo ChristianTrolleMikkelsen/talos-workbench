@@ -20,6 +20,13 @@ helm template \
     --set cgroup.autoMount.enabled=false \
     --set cgroup.hostRoot=/sys/fs/cgroup > $infraDir/cilium.yaml
 
+kubectl create namespace spegel --dry-run=client -o yaml | sed '/name: spegel/a\
+  labels:\
+    pod-security.kubernetes.io/enforce: privileged' > $infraDir/spegel-namespace.yaml
+helm template spegel oci://ghcr.io/spegel-org/helm-charts/spegel -n spegel -f spegel-values.yaml > $infraDir/spegel-template.yaml
+cat $infraDir/spegel-namespace.yaml $infraDir/spegel-template.yaml > $infraDir/spegel.yaml
+rm $infraDir/spegel-namespace.yaml $infraDir/spegel-template.yaml
+
 for folder in "."/*; do
   if [ -d "$folder" ]; then
     folder_name=$(basename "$folder")
