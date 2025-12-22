@@ -3,3 +3,4 @@ operator:
   sbomGenerationEnabled: true
   # -- the flag to enable cluster sbom cache generation
   clusterSbomCacheEnabled: true
+  builtInTrivyServer: true
