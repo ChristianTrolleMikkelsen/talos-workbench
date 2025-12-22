@@ -1,13 +1,15 @@
 #!/bin/bash
 infraDir="infra-templates"
+mkdir -p $infraDir
 
-echo "Updating infra components"
-echo " - Updating helm repos"
 helm repo add cilium https://helm.cilium.io/ > /dev/null
+helm repo add trivy https://helm.cilium.io/ > /dev/null
 helm repo update > /dev/null
 
+echo "Updating infra components"
+echo " - Updating Cilium"
+
 echo " - Generating templates for infrastructure components"
-mkdir -p $infraDir
 helm template \
     cilium \
     cilium/cilium \
@@ -20,12 +22,18 @@ helm template \
     --set cgroup.autoMount.enabled=false \
     --set cgroup.hostRoot=/sys/fs/cgroup > $infraDir/cilium.yaml
 
-kubectl create namespace spegel --dry-run=client -o yaml | sed '/name: spegel/a\
+echo " - Updating Spegel"
+spegelns=$(kubectl create namespace spegel --dry-run=client -o yaml | sed '/name: spegel/a\
   labels:\
-    pod-security.kubernetes.io/enforce: privileged' > $infraDir/spegel-namespace.yaml
-helm template spegel oci://ghcr.io/spegel-org/helm-charts/spegel -n spegel -f spegel-values.yaml > $infraDir/spegel-template.yaml
-cat $infraDir/spegel-namespace.yaml $infraDir/spegel-template.yaml > $infraDir/spegel.yaml
-rm $infraDir/spegel-namespace.yaml $infraDir/spegel-template.yaml
+    pod-security.kubernetes.io/enforce: privileged')
+helm template spegel oci://ghcr.io/spegel-org/helm-charts/spegel -n spegel -f spegel-values.yaml > $infraDir/spegel.yaml
+echo "---\n$spegelns\n" >> $infraDir/spegel.yaml
+
+echo " - Updating Trivy"
+trivyns=$(kubectl create namespace trivy-system --dry-run=client -o yaml)
+helm template trivy-operator oci://ghcr.io/aquasecurity/helm-charts/trivy-operator -n trivy-system -f trivy-values.yaml > $infraDir/trivy.yaml
+echo "---\n$trivyns\n" >> $infraDir/trivy.yaml
+
 
 for folder in "."/*; do
   if [ -d "$folder" ]; then

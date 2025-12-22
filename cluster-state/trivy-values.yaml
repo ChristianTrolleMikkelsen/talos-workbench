@@ -1,0 +1,5 @@
+---
+operator:
+  clusterSbomCacheEnabled: true  #  flag to store / not store sbom report, by default false
+  cacheReportTTL: "120h"         #  flag to set TTL for sbom report, by default 120h
+  scannerReportTTL: "24h"        #  flag to set TTL for vulnerability report, 
