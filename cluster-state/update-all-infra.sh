@@ -27,13 +27,12 @@ spegelns=$(kubectl create namespace spegel --dry-run=client -o yaml | sed '/name
   labels:\
     pod-security.kubernetes.io/enforce: privileged')
 helm template spegel oci://ghcr.io/spegel-org/helm-charts/spegel -n spegel -f spegel-values.yaml > $infraDir/spegel.yaml
-echo "---\n$spegelns\n" >> $infraDir/spegel.yaml
+printf "%s\n%s\n" "---" "$spegelns" >> $infraDir/spegel.yaml
 
 echo " - Updating Trivy"
 trivyns=$(kubectl create namespace trivy-system --dry-run=client -o yaml)
 helm template trivy-operator oci://ghcr.io/aquasecurity/helm-charts/trivy-operator -n trivy-system -f trivy-values.yaml > $infraDir/trivy.yaml
-echo "---\n$trivyns\n" >> $infraDir/trivy.yaml
-
+printf "%s\n%s\n" "---" "$trivyns" >> $infraDir/trivy.yaml
 
 for folder in "."/*; do
   if [ -d "$folder" ]; then

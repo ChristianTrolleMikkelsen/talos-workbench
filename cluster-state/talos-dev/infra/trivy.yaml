@@ -2196,9 +2196,10 @@ spec:
         checks:
           - id: avd-ksv-0106
         severity: LOW
----\napiVersion: v1
+---
+apiVersion: v1
 kind: Namespace
 metadata:
   name: trivy-system
 spec: {}
-status: {}\n
+status: {}
