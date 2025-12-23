@@ -55,6 +55,19 @@ echo " - Updating metrics-server"
 helm template metrics-server metrics-server/metrics-server -n metrics-system --create-namespace --include-crds -f metrics-values.yaml --output-dir $infraDir
 kubectl create namespace metrics-system --dry-run=client -o yaml > $infraDir/metrics-server/templates/namespace.yaml
 
+echo " - Updating monitoring namespace"
+kubectl create namespace monitoring --dry-run=client -o yaml \
+| sed '/name: monitoring$/a\
+  labels:\
+    pod-security.kubernetes.io/enforce: privileged' > $infraDir/monitoring-namespace.yaml
+
+echo " - Updating prometheus"
+helm template prometheus prometheus-community/prometheus -n monitoring --create-namespace --include-crds -f prometheus-values.yaml --output-dir $infraDir
+
+echo " - Updating grafana"
+helm template grafana grafana/grafana -n monitoring --create-namespace --include-crds -f grafana-values.yaml --output-dir $infraDir
+
+
 for folder in "."/*; do
   if [ -d "$folder" ]; then
     folder_name=$(basename "$folder")
