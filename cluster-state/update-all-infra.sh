@@ -34,6 +34,15 @@ echo " - Updating Trivy"
 helm template trivy-operator aqua/trivy-operator -n trivy-system --create-namespace --include-crds -f trivy-values.yaml --output-dir $infraDir
 kubectl create namespace trivy-system --dry-run=client -o yaml > $infraDir/trivy-operator/templates/namespace.yaml
 
+echo " - Updating Local Path Storage Provider"
+echo "   - Setting Talos data disk path /var/mnt/data"
+echo "   - Setting local-path-provider to be default storage class"
+curl https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.32/deploy/local-path-storage.yaml \
+| sed 's|/opt/local-path-provisioner|/var/mnt/data|g' \
+| sed '/name: local-path$/a\
+  annotations:\
+    storageclass.kubernetes.io/is-default-class: "true"' > $infraDir/local-path-storage.yaml
+
 for folder in "."/*; do
   if [ -d "$folder" ]; then
     folder_name=$(basename "$folder")

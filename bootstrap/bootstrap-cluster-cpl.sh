@@ -15,7 +15,9 @@ echo "Bootstrapping control plane node at $cplIp"
 echo " cluster: $clusterName"
 echo " state: $configPath"
 
-talosctl gen config $clusterName https://$cplIp:6443 --config-patch @cni-patch.yml --output-dir $configPath --force
+echo " cni and disk patching..."
+talosctl gen config $clusterName https://$cplIp:6443 --config-patch @cni-patch.yml --config-patch-worker @disk-patch.yml --output-dir $configPath --force
+
 talosctl apply-config --insecure --nodes $cplIp --file $configPath/controlplane.yaml
 
 export TALOSCONFIG=$(readlink -f "$configPath/talosconfig")
