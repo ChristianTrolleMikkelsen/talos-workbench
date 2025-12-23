@@ -4,7 +4,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: spegel-cleanup
-  namespace: spegel
+  namespace: spegel-system
   labels:
     app.kubernetes.io/component: cleanup
     helm.sh/chart: spegel-0.6.0
@@ -33,7 +33,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: spegel-cleanup
-  namespace: spegel
+  namespace: spegel-system
   labels:
     app.kubernetes.io/component: cleanup
     helm.sh/chart: spegel-0.6.0
@@ -98,7 +98,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: spegel-cleanup-wait
-  namespace: spegel
+  namespace: spegel-system
   labels:
     app.kubernetes.io/component: cleanup-wait
     helm.sh/chart: spegel-0.6.0
@@ -117,6 +117,6 @@ spec:
       imagePullPolicy: IfNotPresent
       args:
         - cleanup-wait
-        - --probe-endpoint=spegel-cleanup.spegel.svc.cluster.local.:8080
+        - --probe-endpoint=spegel-cleanup.spegel-system.svc.cluster.local.:8080
   restartPolicy: Never
   terminationGracePeriodSeconds: 0

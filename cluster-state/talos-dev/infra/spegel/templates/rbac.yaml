@@ -4,7 +4,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: spegel
-  namespace: spegel
+  namespace: spegel-system
   labels:
     helm.sh/chart: spegel-0.6.0
     app.kubernetes.io/name: spegel
