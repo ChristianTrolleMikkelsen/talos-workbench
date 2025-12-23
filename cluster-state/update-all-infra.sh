@@ -4,6 +4,7 @@ mkdir -p $infraDir
 
 helm repo add cilium https://helm.cilium.io/ > /dev/null
 helm repo add aqua https://aquasecurity.github.io/helm-charts/ > /dev/null
+helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/ > /dev/null
 helm repo update > /dev/null
 
 echo "Updating infra components"
@@ -25,8 +26,8 @@ helm template \
     --output-dir $infraDir
 
 echo " - Updating Spegel"
-helm template spegel oci://ghcr.io/spegel-org/helm-charts/spegel -n spegel --create-namespace --include-crds -f spegel-values.yaml --output-dir $infraDir
-kubectl create namespace spegel --dry-run=client -o yaml | sed '/name: spegel/a\
+helm template spegel oci://ghcr.io/spegel-org/helm-charts/spegel -n spegel-system --create-namespace --include-crds -f spegel-values.yaml --output-dir $infraDir
+kubectl create namespace spegel-system --dry-run=client -o yaml | sed '/name: spegel-system/a\
   labels:\
     pod-security.kubernetes.io/enforce: privileged' > $infraDir/spegel/templates/namespace.yaml
 
@@ -46,6 +47,13 @@ curl https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.32/de
 | sed '/name: local-path$/a\
   annotations:\
     storageclass.kubernetes.io/is-default-class: "true"' > $infraDir/local-path-storage.yaml
+
+echo " - Updating kubelet-serving-cert-approver"
+curl https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml > $infraDir/kubelet-serving-cert-approver.yaml
+
+echo " - Updating metrics-server"
+helm template metrics-server metrics-server/metrics-server -n metrics-system --create-namespace --include-crds -f metrics-values.yaml --output-dir $infraDir
+kubectl create namespace metrics-system --dry-run=client -o yaml > $infraDir/metrics-server/templates/namespace.yaml
 
 for folder in "."/*; do
   if [ -d "$folder" ]; then

@@ -8,6 +8,8 @@ usage() {
 clusterName=$1
 cplIp=$2
 configPath=state/$clusterName
+cplConfig=$configPath/controlplane.yaml
+workerConfig=$configPath/worker.yaml
 
 mkdir -p $configPath
 
@@ -15,8 +17,19 @@ echo "Bootstrapping control plane node at $cplIp"
 echo " cluster: $clusterName"
 echo " state: $configPath"
 
-echo " cni and disk patching..."
-talosctl gen config $clusterName https://$cplIp:6443 --config-patch @cni-patch.yml --config-patch-worker @disk-patch.yml --output-dir $configPath --force
+echo " generating basic machine configs..."
+talosctl gen config $clusterName https://$cplIp:6443 --output-dir $configPath --force
+
+echo " pathcing cni..."
+talosctl machineconfig patch $cplConfig --patch @cni-patch.yml -o $cplConfig
+talosctl machineconfig patch $workerConfig --patch @cni-patch.yml -o $workerConfig
+
+echo " patching disks..."
+talosctl machineconfig patch $workerConfig --patch @disk-patch.yml -o $workerConfig
+
+echo " patching for rotate-server-certificates to enable monitoring..."
+talosctl machineconfig patch $cplConfig --patch @metrics-patch.yml -o $cplConfig
+talosctl machineconfig patch $workerConfig --patch @metrics-patch.yml -o $workerConfig
 
 talosctl apply-config --insecure --nodes $cplIp --file $configPath/controlplane.yaml
 
