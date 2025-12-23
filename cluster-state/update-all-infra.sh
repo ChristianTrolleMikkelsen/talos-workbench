@@ -66,7 +66,8 @@ helm template prometheus prometheus-community/prometheus -n monitoring --create-
 
 echo " - Updating grafana"
 helm template grafana grafana/grafana -n monitoring --create-namespace --include-crds -f grafana-values.yaml --output-dir $infraDir
-
+echo "   - Deleting test directory that we dont want deployed"
+rm -rf $infraDir/grafana/templates/tests
 
 for folder in "."/*; do
   if [ -d "$folder" ]; then
