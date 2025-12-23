@@ -1,0 +1,46 @@
+---
+# Source: trivy-operator/templates/configmaps/trivy.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trivy-operator-trivy-config
+  namespace: trivy-system
+  labels:
+    helm.sh/chart: trivy-operator-0.31.0
+    app.kubernetes.io/name: trivy-operator
+    app.kubernetes.io/instance: trivy-operator
+    app.kubernetes.io/version: "0.29.0"
+    app.kubernetes.io/managed-by: Helm
+data:
+  trivy.repository: "mirror.gcr.io/aquasec/trivy"
+  trivy.tag: "0.66.0"
+  trivy.imagePullPolicy: "IfNotPresent"
+  trivy.additionalVulnerabilityReportFields: ""
+  trivy.severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
+  trivy.slow: "true"
+  trivy.skipJavaDBUpdate: "false"
+  trivy.includeDevDeps: "false"
+  trivy.imageScanCacheDir: "/tmp/trivy/.cache"
+  trivy.filesystemScanCacheDir: "/var/trivyoperator/trivy-db"
+  trivy.dbRepository: "mirror.gcr.io/aquasec/trivy-db"
+  trivy.javaDbRepository: "mirror.gcr.io/aquasec/trivy-java-db"
+  trivy.command: "image"
+  trivy.sbomSources: ""
+  trivy.dbRepositoryInsecure: "false"
+  trivy.useBuiltinRegoPolicies: "false"
+  trivy.useEmbeddedRegoPolicies: "true"
+  trivy.supportedConfigAuditKinds: "Workload,Service,Role,ClusterRole,NetworkPolicy,Ingress,LimitRange,ResourceQuota"
+  trivy.timeout: "5m0s"
+  trivy.serverURL: "http://trivy-service.trivy-system:4954"
+  trivy.mode: "ClientServer"
+  trivy.resources.requests.cpu: "100m"
+  trivy.resources.requests.memory: "100M"
+  trivy.resources.limits.cpu: "500m"
+  trivy.resources.limits.memory: "500M"
+  TRIVY_LISTEN: "0.0.0.0:4954"
+  TRIVY_CACHE_DIR: "/home/scanner/.cache/trivy"
+  TRIVY_DEBUG: "false"
+  TRIVY_SKIP_DB_UPDATE: "false"
+  TRIVY_DB_REPOSITORY: "mirror.gcr.io/aquasec/trivy-db"
+  TRIVY_JAVA_DB_REPOSITORY: "mirror.gcr.io/aquasec/trivy-java-db"
+  TRIVY_INSECURE: "false"
