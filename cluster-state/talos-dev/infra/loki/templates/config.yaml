@@ -42,13 +42,9 @@ data:
       path_prefix: /var/loki
       replication_factor: 1
       storage:
-        s3:
-          access_key_id: root-user
-          bucketnames: chunks
-          endpoint: loki-minio.monitoring.svc:9000
-          insecure: true
-          s3forcepathstyle: true
-          secret_access_key: supersecretpassword
+        filesystem:
+          chunks_directory: /var/loki/chunks
+          rules_directory: /var/loki/rules
     frontend:
       scheduler_address: ""
       tail_proxy_url: ""
@@ -86,9 +82,7 @@ data:
             update_interval: 1m
     ruler:
       storage:
-        s3:
-          bucketnames: ruler
-        type: s3
+        type: local
       wal:
         dir: /var/loki/ruler-wal
     runtime_config:

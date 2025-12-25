@@ -72,12 +72,12 @@ echo "   - Deleting test directory that we dont want deployed"
 rm -rf $infraDir/grafana/templates/tests
 
 echo " - Updating loki"
-helm template loki grafana/loki -n monitoring --create-namespace --include-crds --set resources.limits.cpu=500m --set resources.limits.memory=512Mi -f loki-values.yaml --output-dir $infraDir/grafana-loki
-rm -rf $infraDir/grafana-loki/templates/tests
+helm template loki grafana/loki -n monitoring --create-namespace --include-crds --set resources.limits.cpu=500m --set resources.limits.memory=512Mi -f loki-values.yaml --output-dir $infraDir
+rm -rf $infraDir/loki/templates/tests
 
 echo " - Updating alloy"
-helm template alloy grafana/alloy -n monitoring --create-namespace --include-crds --set resources.limits.cpu=500m --set resources.limits.memory=512Mi -f alloy-values.yaml --output-dir $infraDir/grafana-alloy
-rm -rf $infraDir/grafana-alloy/templates/tests
+helm template alloy grafana/alloy -n monitoring --create-namespace --include-crds --set resources.limits.cpu=500m --set resources.limits.memory=512Mi -f alloy-values.yaml --output-dir $infraDir
+rm -rf $infraDir/alloy/templates/tests
 
 
 for folder in "."/*; do
