@@ -5,6 +5,8 @@ mkdir -p $infraDir
 helm repo add cilium https://helm.cilium.io/ > /dev/null
 helm repo add aqua https://aquasecurity.github.io/helm-charts/ > /dev/null
 helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/ > /dev/null
+helm repo add grafana https://grafana.github.io/helm-charts > /dev/null
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts > /dev/null
 helm repo update > /dev/null
 
 echo "Updating infra components"
@@ -68,6 +70,15 @@ echo " - Updating grafana"
 helm template grafana grafana/grafana -n monitoring --create-namespace --include-crds -f grafana-values.yaml --output-dir $infraDir
 echo "   - Deleting test directory that we dont want deployed"
 rm -rf $infraDir/grafana/templates/tests
+
+echo " - Updating loki"
+helm template loki grafana/loki -n monitoring --create-namespace --include-crds --set resources.limits.cpu=500m --set resources.limits.memory=512Mi -f loki-values.yaml --output-dir $infraDir/grafana-loki
+rm -rf $infraDir/grafana-loki/templates/tests
+
+echo " - Updating alloy"
+helm template alloy grafana/alloy -n monitoring --create-namespace --include-crds --set resources.limits.cpu=500m --set resources.limits.memory=512Mi -f alloy-values.yaml --output-dir $infraDir/grafana-alloy
+rm -rf $infraDir/grafana-alloy/templates/tests
+
 
 for folder in "."/*; do
   if [ -d "$folder" ]; then
