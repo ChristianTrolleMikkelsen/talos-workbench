@@ -22,21 +22,6 @@ data:
       client:
         addresses: ""
       enabled: false
-    chunk_store_config:
-      chunk_cache_config:
-        background:
-          writeback_buffer: 500000
-          writeback_goroutines: 1
-          writeback_size_limit: 500MB
-        default_validity: 0s
-        memcached:
-          batch_size: 4
-          parallelism: 5
-        memcached_client:
-          addresses: dnssrvnoa+_memcached-client._tcp.loki-chunks-cache.monitoring.svc.cluster.local
-          consistent_hash: true
-          max_idle_conns: 72
-          timeout: 2000ms
     common:
       compactor_grpc_address: 'loki.monitoring.svc.cluster.local:9095'
       path_prefix: /var/loki

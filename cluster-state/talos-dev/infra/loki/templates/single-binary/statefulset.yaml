@@ -32,7 +32,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 05962f4b54936644e2e82797d02ddcc9b41cc70da71442b4bb78ddcb45751219
+        checksum/config: d897833372eda629846a77324f5d70319d6b5a9026e101ec4ca030f97d74efb7
         storage/size: "10Gi"
         kubectl.kubernetes.io/default-container: "loki"
       labels:
