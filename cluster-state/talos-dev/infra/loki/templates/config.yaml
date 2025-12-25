@@ -13,7 +13,7 @@ metadata:
 data:
   config.yaml: |
     
-    auth_enabled: true
+    auth_enabled: false
     bloom_build:
       builder:
         planner_address: ""

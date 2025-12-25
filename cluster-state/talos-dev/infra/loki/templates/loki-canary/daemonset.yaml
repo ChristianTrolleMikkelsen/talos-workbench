@@ -44,9 +44,6 @@ spec:
             - -addr=loki-gateway.monitoring.svc.cluster.local.:80
             - -labelname=pod
             - -labelvalue=$(POD_NAME)
-            - -user=self-monitoring
-            - -tenant-id=self-monitoring
-            - -pass=
             - -push=true
           securityContext:
             allowPrivilegeEscalation: false
