@@ -91,7 +91,7 @@ data:
       configs:
       - from: "2020-10-24"
         index:
-          period: 48h
+          period: 24h
           prefix: index_
         object_store: filesystem
         schema: v13
