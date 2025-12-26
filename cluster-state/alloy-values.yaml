@@ -146,7 +146,7 @@ alloy:
             }
         }
 
-        forward_to = [loki.write.<WRITE_COMPONENT_NAME>.receiver]
+        forward_to = [loki.write.default.receiver]
       }
 
   clustering:
