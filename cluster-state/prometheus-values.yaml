@@ -5,6 +5,10 @@ server:
     ##
     enabled: true
 
+  extraFlags:
+  - web.enable-lifecycle
+  - web.enable-remote-write-receiver
+
 alertmanager:
   ## If false, alertmanager will not be installed
   ##
