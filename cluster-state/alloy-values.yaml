@@ -27,11 +27,11 @@ alloy:
 
       prometheus.relabel "filter_metrics" {
         rule {
-        //    action        = "drop"
-        //    source_labels = ["env"]
-        //    regex         = "dev"
+            action        = "drop"
+            source_labels = ["env"]
+            regex         = "FILLMEWITHAVALUETOFILTER"
         }
-      forward_to = [prometheus.remote_write.metrics_service.receiver]
+        forward_to = [prometheus.remote_write.metrics_service.receiver]
       }
 
       prometheus.remote_write "metrics_service" {
