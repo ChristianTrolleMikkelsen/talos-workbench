@@ -2,3 +2,6 @@
 ---
 spegel:
   containerdRegistryConfigPath: /etc/cri/conf.d/hosts # https://github.com/spegel-org/spegel/blob/main/docs/COMPATIBILITY.md#talos
+
+serviceMonitor:
+  enabled: true
