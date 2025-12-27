@@ -13,7 +13,7 @@ alloy:
     content: |
       prometheus.exporter.unix "local_system" {
       }
-      
+
       prometheus.scrape "scrape_metrics" {
         targets = [
           "prometheus.exporter.unix.local_system.targets",
@@ -25,14 +25,14 @@ alloy:
         scrape_interval = "10s"
       }
 
-      //prometheus.relabel "filter_metrics" {
-      //  rule {
-      //    action        = "drop"
-      //    source_labels = ["env"]
-      //    regex         = "dev"
-      //  }
-      //forward_to = [prometheus.remote_write.metrics_service.receiver]
-      //}
+      prometheus.relabel "filter_metrics" {
+        rule {
+        //    action        = "drop"
+        //    source_labels = ["env"]
+        //    regex         = "dev"
+        }
+      forward_to = [prometheus.remote_write.metrics_service.receiver]
+      }
 
       prometheus.remote_write "metrics_service" {
           endpoint {

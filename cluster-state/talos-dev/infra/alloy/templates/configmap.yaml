@@ -29,14 +29,14 @@ data:
       scrape_interval = "10s"
     }
     
-    //prometheus.relabel "filter_metrics" {
-    //  rule {
-    //    action        = "drop"
-    //    source_labels = ["env"]
-    //    regex         = "dev"
-    //  }
-    //forward_to = [prometheus.remote_write.metrics_service.receiver]
-    //}
+    prometheus.relabel "filter_metrics" {
+      rule {
+      //    action        = "drop"
+      //    source_labels = ["env"]
+      //    regex         = "dev"
+      }
+    forward_to = [prometheus.remote_write.metrics_service.receiver]
+    }
     
     prometheus.remote_write "metrics_service" {
         endpoint {
