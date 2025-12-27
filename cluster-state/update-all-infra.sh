@@ -24,6 +24,8 @@ helm template \
     --set securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
     --set cgroup.autoMount.enabled=false \
     --set cgroup.hostRoot=/sys/fs/cgroup \
+    --set hubble.ui.enabled=true \
+    --set hubble.relay.enabled=true \
     --include-crds \
     --output-dir $infraDir
 
