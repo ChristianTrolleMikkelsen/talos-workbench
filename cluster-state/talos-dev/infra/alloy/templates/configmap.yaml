@@ -27,7 +27,7 @@ data:
     prometheus.scrape "scrape_infra_metrics" {
       targets = [
         {"__address__" = "trivy-operator.trivy-system.svc.cluster.local:80", service = "trivy-operator"},
-        {"__address__" = "spegel.spegesl-system.svc.cluster.local:9090", service = "spegel"},
+        {"__address__" = "spegel.spegel-system.svc.cluster.local:9090", service = "spegel"},
         {"__address__" = "kubelet-serving-cert-approver.kubelet-serving-cert-approver.svc.cluster.local:9090", service = "kubelet-serving-cert-approver"},
         {"__address__" = "cilium-envoy.kube-system:9964", service = "cilium-envoy"},
       ]
