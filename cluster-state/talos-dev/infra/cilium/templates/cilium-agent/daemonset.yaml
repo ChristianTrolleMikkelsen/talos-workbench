@@ -20,6 +20,8 @@ spec:
   template:
     metadata:
       annotations:
+        prometheus.io/port: "9962"
+        prometheus.io/scrape: "true"
         # Set app AppArmor's profile to "unconfined". The value of this annotation
         # can be modified as long users know which profiles they have available
         # in AppArmor.
@@ -136,6 +138,19 @@ spec:
             exec:
               command:
               - /cni-uninstall.sh
+        ports:
+        - name: peer-service
+          containerPort: 4244
+          hostPort: 4244
+          protocol: TCP
+        - name: prometheus
+          containerPort: 9962
+          hostPort: 9962
+          protocol: TCP
+        - name: hubble-metrics
+          containerPort: 9965
+          hostPort: 9965
+          protocol: TCP
         securityContext:
           seLinuxOptions:
             level: s0
