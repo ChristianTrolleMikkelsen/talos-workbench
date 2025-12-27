@@ -9,6 +9,11 @@ server:
   - web.enable-lifecycle
   - web.enable-remote-write-receiver
 
+##Drop all configs as we want Allot to manage all scrapes
+serverFiles:
+  prometheus.yml:
+    scrape_configs: []
+
 alertmanager:
   ## If false, alertmanager will not be installed
   ##
@@ -31,6 +36,7 @@ prometheus-node-exporter:
   enabled: false
 
 ## prometheus-pushgateway sub-chart configurable values
+
 ## Please see https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-pushgateway
 ##
 prometheus-pushgateway:

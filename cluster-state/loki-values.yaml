@@ -30,6 +30,10 @@ loki:
   ruler:
     enable_api: true
 
+monitoring:
+  serviceMonitor:
+    enabled: true
+
 minio:
   enabled: false
       
@@ -66,4 +70,7 @@ bloomGateway:
   replicas: 0
 
 chunksCache:
+  enabled: false
+
+test:
   enabled: false
