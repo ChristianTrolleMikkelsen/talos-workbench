@@ -2,3 +2,26 @@
 pluginsManager:
   # -- Enable plugin manager
   enabled: true
+
+config:
+  oidc:
+    secret:
+      create: false
+  pluginsDir: /build/plugins
+
+initContainers:
+  - command:
+      - /bin/sh
+      - '-c'
+      - mkdir -p /build/plugins && cp -r /plugins/* /build/plugins/
+    image: quay.io/kubescape/headlamp-plugin:v0.10.3
+    name: kubescape-plugin
+    volumeMounts:
+      - mountPath: /build/plugins
+        name: headlamp-plugins
+volumeMounts:
+  - name: headlamp-plugins
+    mountPath: /build/plugins
+volumes:
+  - name: headlamp-plugins
+    emptyDir: {}

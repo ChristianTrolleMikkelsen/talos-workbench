@@ -30,6 +30,17 @@ spec:
       automountServiceAccountToken: true
       securityContext:
         {}
+      initContainers:
+        
+        - command:
+          - /bin/sh
+          - -c
+          - mkdir -p /build/plugins && cp -r /plugins/* /build/plugins/
+          image: quay.io/kubescape/headlamp-plugin:v0.10.3
+          name: kubescape-plugin
+          volumeMounts:
+          - mountPath: /build/plugins
+            name: headlamp-plugins
       containers:
         - name: headlamp
           securityContext:
@@ -43,7 +54,7 @@ spec:
           env:
           args:
             - "-in-cluster"
-            - "-plugins-dir=/headlamp/plugins"
+            - "-plugins-dir=/build/plugins"
             # Check if externalSecret is disabled
           ports:
             - name: http
@@ -61,7 +72,9 @@ spec:
             {}
           volumeMounts:
             - name: plugins-dir
-              mountPath: /headlamp/plugins
+              mountPath: /build/plugins
+            - mountPath: /build/plugins
+              name: headlamp-plugins
         - name: headlamp-plugin
           image: node:lts-alpine
           command: ["/bin/sh", "-c"]
@@ -75,11 +88,11 @@ spec:
                 # Use a writable config directory
                 export NPM_CONFIG_USERCONFIG=/tmp/npm-userconfig
                 mkdir -p /tmp/npm-cache /tmp/npm-userconfig
-                npx --yes @headlamp-k8s/pluginctl@latest install --config /config/plugin.yml --folderName /headlamp/plugins --watch
+                npx --yes @headlamp-k8s/pluginctl@latest install --config /config/plugin.yml --folderName /build/plugins --watch
               fi
           volumeMounts:
             - name: plugins-dir
-              mountPath: /headlamp/plugins
+              mountPath: /build/plugins
             - name: plugin-config
               mountPath: /config
           resources:
@@ -95,3 +108,5 @@ spec:
         - name: plugin-config
           configMap:
             name: headlamp-plugin-config
+        - emptyDir: {}
+          name: headlamp-plugins

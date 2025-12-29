@@ -44,7 +44,10 @@ kubectl create namespace spegel-system --dry-run=client -o yaml | sed '/name: sp
 
 echo " - Updating Trivy"
 helm template trivy-operator aqua/trivy-operator -n trivy-system --create-namespace --include-crds -f trivy-values.yaml --output-dir $infraDir
-kubectl create namespace trivy-system --dry-run=client -o yaml > $infraDir/trivy-operator/templates/namespace.yaml
+kubectl create namespace trivy-system --dry-run=client -o yaml | sed '/name: trivy-system/a\
+  labels:\
+    pod-security.kubernetes.io/enforce: privileged' > $infraDir/trivy-operator/templates/namespace.yaml
+
 sed -i '' '/clusterIP: None/d' "$infraDir/trivy-operator/templates/monitor/service.yaml"
 
 echo " - Updating Local Path Storage Provider"
