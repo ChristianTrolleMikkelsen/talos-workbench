@@ -255,9 +255,6 @@ service:
   annotations: {}
     # cloud.google.com/load-balancer-type: Internal
 
-serviceMonitor:
-  enabled: false
-
 ingress:
   # -- Enables ingress for Alloy (Faro port)
   enabled: false
