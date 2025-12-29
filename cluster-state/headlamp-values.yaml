@@ -18,10 +18,4 @@ initContainers:
     name: kubescape-plugin
     volumeMounts:
       - mountPath: /build/plugins
-        name: headlamp-plugins
-volumeMounts:
-  - name: headlamp-plugins
-    mountPath: /build/plugins
-volumes:
-  - name: headlamp-plugins
-    emptyDir: {}
+        name: plugins-dir

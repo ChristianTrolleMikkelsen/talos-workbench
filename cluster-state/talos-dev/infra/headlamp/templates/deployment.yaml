@@ -40,7 +40,7 @@ spec:
           name: kubescape-plugin
           volumeMounts:
           - mountPath: /build/plugins
-            name: headlamp-plugins
+            name: plugins-dir
       containers:
         - name: headlamp
           securityContext:
@@ -73,8 +73,6 @@ spec:
           volumeMounts:
             - name: plugins-dir
               mountPath: /build/plugins
-            - mountPath: /build/plugins
-              name: headlamp-plugins
         - name: headlamp-plugin
           image: node:lts-alpine
           command: ["/bin/sh", "-c"]
@@ -108,5 +106,3 @@ spec:
         - name: plugin-config
           configMap:
             name: headlamp-plugin-config
-        - emptyDir: {}
-          name: headlamp-plugins
