@@ -1,0 +1,49 @@
+capabilities:
+  # ====== Base operator ======
+  operator: enable
+
+  # ====== configuration scanning related capabilities ======
+  #
+  # Default configuration scanning setup
+  configurationScan: enable
+  # Continuous Scanning continuously evaluates the security posture of your cluster.
+  continuousScan: enable
+  nodeScan: enable
+
+  # ====== Image vulnerabilities scanning related capabilities ======
+  #
+  nodeSbomGeneration: enable # Warning: When disabled along with enableClusterWideSecretAccess: false, vulnerability scanning capabilities will be limited
+  # Instruct Syft to also scan for SBOM files in the filesystem container
+  scanEmbeddedSBOMs: enable
+  vulnerabilityScan: enable
+  relevancy: enable
+  # Generate VEX documents alongside the image vulnerabilities report (experimental)
+  vexGeneration: disable
+
+  # ====== Other capabilities ======
+  #
+  # This is an experimental capability with an elevated security risk. Read the
+  # matching docs before enabling.
+  autoUpgrading: disable
+  kubescapeOffline: disable
+  prometheusExporter: disable
+  # seccompGenerator: disable
+
+serviceScanConfig:
+  enabled: true
+  interval: 1d
+
+configurations:
+  prometheusAnnotations: enable
+
+global:
+  enableClusterWideSecretAccess: true
+
+kubescapeScheduler:
+  scanSchedule: "0 0 1 * *"
+
+kubevulnScheduler:
+  scanSchedule: "0 0 1 * *"
+  
+registryScanScheduler:
+  scanSchedule: "0 0 1 * *"
