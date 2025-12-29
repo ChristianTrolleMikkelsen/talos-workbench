@@ -90,7 +90,10 @@ rm -rf $infraDir/alloy/templates/tests
 
 echo " - Updating kubescrape"
 helm template kubescape kubescape/kubescape-operator -n kubescape --create-namespace --include-crds -f kubescape-values.yaml --output-dir $infraDir
-kubectl create namespace kubescape --dry-run=client -o yaml > $infraDir/kubescape-operator/templates/namespace.yaml
+kubectl create namespace kubescape --dry-run=client -o yaml | sed '/name: kubescape/a\
+  labels:\
+    pod-security.kubernetes.io/enforce: privileged' > $infraDir/kubescape-operator/templates/namespace.yaml
+
 #helm template kubescape kubescape/kubescape-operator -n kubescape --create-namespace --set clusterName=`kubectl config current-context` -f kubescape-values.yaml --output-dir $infraDir
 
 for folder in "."/*; do

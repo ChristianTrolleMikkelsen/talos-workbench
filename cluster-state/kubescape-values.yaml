@@ -39,9 +39,6 @@ configurations:
 global:
   enableClusterWideSecretAccess: true
 
-nodeAgent:
-  privileged: true
-
 kubescapeScheduler:
   scanSchedule: "0 0 1 * *"
 
