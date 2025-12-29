@@ -1,0 +1,4 @@
+# Plugin Manager Sidecar Container Configuration
+pluginsManager:
+  # -- Enable plugin manager
+  enabled: true

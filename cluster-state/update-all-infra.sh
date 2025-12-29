@@ -8,6 +8,7 @@ helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/ >
 helm repo add grafana https://grafana.github.io/helm-charts > /dev/null
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts > /dev/null
 helm repo add kubescape https://kubescape.github.io/helm-charts/ > /dev/null
+helm repo add headlamp https://kubernetes-sigs.github.io/headlamp/ > /dev/null
 helm repo update > /dev/null
 
 echo "Updating infra components"
@@ -93,6 +94,9 @@ helm template kubescape kubescape/kubescape-operator -n kubescape --create-names
 kubectl create namespace kubescape --dry-run=client -o yaml | sed '/name: kubescape/a\
   labels:\
     pod-security.kubernetes.io/enforce: privileged' > $infraDir/kubescape-operator/templates/namespace.yaml
+
+echo " - Updating headlamp"
+helm template headlamp headlamp/headlamp --namespace kube-system --include-crds -f headlamp-values.yaml --output-dir $infraDir
 
 #helm template kubescape kubescape/kubescape-operator -n kubescape --create-namespace --set clusterName=`kubectl config current-context` -f kubescape-values.yaml --output-dir $infraDir
 
