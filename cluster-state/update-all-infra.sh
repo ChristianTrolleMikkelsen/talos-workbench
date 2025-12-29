@@ -7,6 +7,7 @@ helm repo add aqua https://aquasecurity.github.io/helm-charts/ > /dev/null
 helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/ > /dev/null
 helm repo add grafana https://grafana.github.io/helm-charts > /dev/null
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts > /dev/null
+helm repo add kubescape https://kubescape.github.io/helm-charts/ > /dev/null
 helm repo update > /dev/null
 
 echo "Updating infra components"
@@ -87,6 +88,10 @@ echo " - Updating alloy"
 helm template alloy grafana/alloy -n monitoring --create-namespace --include-crds --set resources.limits.cpu=500m --set resources.limits.memory=512Mi -f alloy-values.yaml --output-dir $infraDir
 rm -rf $infraDir/alloy/templates/tests
 
+echo " - Updating kubescrape"
+helm template kubescape kubescape/kubescape-operator -n kubescape --create-namespace -f kubescape-values.yaml --output-dir $infraDir
+kubectl create namespace kubescape --dry-run=client -o yaml > $infraDir/kubescape-operator/templates/namespace.yaml
+#helm template kubescape kubescape/kubescape-operator -n kubescape --create-namespace --set clusterName=`kubectl config current-context` -f kubescape-values.yaml --output-dir $infraDir
 
 for folder in "."/*; do
   if [ -d "$folder" ]; then

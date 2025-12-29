@@ -1,0 +1,24 @@
+---
+# Source: kubescape-operator/templates/kubescape/role.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: kubescape
+  namespace: kubescape
+  annotations:
+    
+  labels:
+    helm.sh/chart: kubescape-operator-1.30.0
+    app.kubernetes.io/name: kubescape-operator
+    app.kubernetes.io/instance: kubescape
+    app.kubernetes.io/component: kubescape
+    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubescape
+    app: kubescape
+    tier: ks-control-plane
+    kubescape.io/ignore: "true"
+rules:
+  - apiGroups: ["apps"]
+    resources: ["daemonsets"]
+    verbs: ["create", "get", "update", "watch", "list", "patch", "delete"]

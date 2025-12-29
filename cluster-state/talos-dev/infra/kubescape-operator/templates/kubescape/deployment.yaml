@@ -1,0 +1,177 @@
+---
+# Source: kubescape-operator/templates/kubescape/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubescape
+  namespace: kubescape
+  annotations:
+    
+  labels:
+    helm.sh/chart: kubescape-operator-1.30.0
+    app.kubernetes.io/name: kubescape-operator
+    app.kubernetes.io/instance: kubescape
+    app.kubernetes.io/component: kubescape
+    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubescape
+    app: kubescape
+    tier: ks-control-plane
+    kubescape.io/ignore: "true"
+    kubescape.io/tier: "core"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 0%
+      maxUnavailable: 100%
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kubescape-operator
+      app.kubernetes.io/instance: kubescape
+      app.kubernetes.io/component: kubescape
+  template:
+    metadata:
+      annotations:
+        
+        checksum/host-scanner-configmap: 036bc539640beb5942debdce203fe67ebcdbc529f20bf7759afee14a6701a011
+        checksum/cloud-secret: 192498af36fa8b505f01b472407fcc09b948e1259f80663d34f3f3885cdf0d25
+        checksum/cloud-config: 6a6fa5c4e03cfff5dda70cb3b1cbdc803ee0d20b175e7bb06a1eb17c93d5321f
+        prometheus.io/path: /v1/metrics
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      labels:
+        helm.sh/chart: kubescape-operator-1.30.0
+        app.kubernetes.io/name: kubescape-operator
+        app.kubernetes.io/instance: kubescape
+        app.kubernetes.io/component: kubescape
+        app.kubernetes.io/version: "1.30.0"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/part-of: kubescape
+        app: kubescape
+        tier: ks-control-plane
+        kubescape.io/ignore: "true"
+        kubescape.io/tier: "core"
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsUser: 65532
+        fsGroup: 65532
+      containers:
+      - name: kubescape
+        image: "quay.io/kubescape/kubescape:v3.0.47"
+        imagePullPolicy: "IfNotPresent"
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+        ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /livez
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        env:
+        - name: GOMEMLIMIT
+          valueFrom:
+            resourceFieldRef:
+              resource: limits.memory
+              divisor: '1'
+        - name: GOMAXPROCS
+          valueFrom:
+            resourceFieldRef:
+              resource: limits.cpu
+              divisor: '1'
+        - name: KS_LOGGER_LEVEL
+          value: "info"
+        - name: KS_LOGGER_NAME
+          value: "zap"
+        - name: KS_DOWNLOAD_ARTIFACTS  # When set to true the artifacts will be downloaded every scan execution
+          value: "true"
+        - name: RULE_PROCESSING_GOMAXPROCS
+          value: ""
+        - name: KS_DEFAULT_CONFIGMAP_NAME
+          value: "kubescape-config"
+        - name: KS_DEFAULT_CONFIGMAP_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: KS_CONTEXT
+          value: "cluster"
+        - name: KS_DEFAULT_CLOUD_CONFIGMAP_NAME
+          value: ks-cloud-config
+        - name: KS_ENABLE_HOST_SCANNER
+          value: "true"
+        - name: KS_SKIP_UPDATE_CHECK
+          value: "false"
+        - name: KS_HOST_SCAN_YAML
+          value: "/home/nonroot/.kubescape/host-scanner.yaml"
+        - name: LARGE_CLUSTER_SIZE
+          value: "1500"
+        - name: KS_EXCLUDE_NAMESPACES
+          value: "kubescape,kube-system,kube-public,kube-node-lease,kubeconfig,gmp-system,gmp-public"
+        command:
+        - ksserver
+        resources:
+              limits:
+                cpu: 600m
+                memory: 1Gi
+              requests:
+                cpu: 250m
+                memory: 400Mi
+        volumeMounts:
+        - name: cloud-secret
+          mountPath: /etc/credentials
+          readOnly: true
+        - name: kubescape-volume
+          mountPath: /home/nonroot/.kubescape
+          subPath: config.json
+        - name: host-scanner-definition
+          mountPath: /home/nonroot/.kubescape/host-scanner.yaml
+          subPath: host-scanner-yaml
+        - name: results
+          mountPath: /home/nonroot/results
+        - name: failed
+          mountPath: /home/nonroot/failed
+        - name: ks-cloud-config
+          mountPath: /etc/config/clusterData.json
+          readOnly: true
+          subPath: "clusterData.json"
+      volumes:
+      - name: cloud-secret
+        secret:
+          secretName: cloud-secret
+      - name: ks-cloud-config
+        configMap:
+          name: ks-cloud-config
+          items:
+          - key: "clusterData"
+            path: "clusterData.json"
+      - name: host-scanner-definition
+        configMap:
+          name: host-scanner-definition
+      - name: kubescape-volume
+        emptyDir: {}
+      - name: results
+        emptyDir: {}
+      - name: failed
+        emptyDir: {}
+      serviceAccountName: kubescape
+      automountServiceAccountToken: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      affinity:
+      tolerations:

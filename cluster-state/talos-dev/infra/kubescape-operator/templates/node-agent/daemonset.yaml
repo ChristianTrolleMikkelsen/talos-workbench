@@ -1,0 +1,240 @@
+---
+# Source: kubescape-operator/templates/node-agent/daemonset.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-agent
+  namespace: kubescape
+  annotations:
+    
+  labels:
+    helm.sh/chart: kubescape-operator-1.30.0
+    app.kubernetes.io/name: kubescape-operator
+    app.kubernetes.io/instance: kubescape
+    app.kubernetes.io/component: node-agent
+    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubescape
+    app: node-agent
+    tier: ks-control-plane
+    kubescape.io/ignore: "true"
+    kubescape.io/tier: "core"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kubescape-operator
+      app.kubernetes.io/instance: kubescape
+      app.kubernetes.io/component: node-agent
+  template:
+    metadata:
+      annotations:
+        
+        checksum/node-agent-config: 8fb7de11dd0cb926473bf52254b927f8f4a116c8f671161a63580beda13f6ac5
+        checksum/cloud-secret: 192498af36fa8b505f01b472407fcc09b948e1259f80663d34f3f3885cdf0d25
+        checksum/cloud-config: 6a6fa5c4e03cfff5dda70cb3b1cbdc803ee0d20b175e7bb06a1eb17c93d5321f
+        container.apparmor.security.beta.kubernetes.io/node-agent: unconfined
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      labels:
+        helm.sh/chart: kubescape-operator-1.30.0
+        app.kubernetes.io/name: kubescape-operator
+        app.kubernetes.io/instance: kubescape
+        app.kubernetes.io/component: node-agent
+        app.kubernetes.io/version: "1.30.0"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/part-of: kubescape
+        app: node-agent
+        tier: ks-control-plane
+        kubescape.io/ignore: "true"
+        kubescape.io/tier: "core"
+    spec:
+      securityContext:
+      priorityClassName: kubescape-critical
+      serviceAccountName: node-agent
+      automountServiceAccountToken: true
+      hostPID: true
+      initContainers:
+      volumes:
+        - hostPath:
+            path: /
+          name: host
+        - hostPath:
+            path: /var/lib/kubelet
+          name: kubeletdir
+        - hostPath:
+            path: /run
+          name: run
+        - hostPath:
+            path: /var
+          name: var
+        - hostPath:
+            path: /sys/fs/cgroup
+          name: cgroup
+        - hostPath:
+            path: /lib/modules
+          name: modules
+        - hostPath:
+            path: /sys/fs/bpf
+          name: bpffs
+        - hostPath:
+            path: /sys/kernel/debug
+          name: debugfs
+        - hostPath:
+            path: /boot
+          name: boot
+        - emptyDir: null
+          name: data
+        - emptyDir: null
+          name: profiles
+        - emptyDir: {}
+          name: clamdb
+        - emptyDir: {}
+          name: clamrun
+        - configMap:
+            items:
+            - key: clamd.conf
+              path: clamd.conf
+            - key: freshclam.conf
+              path: freshclam.conf
+            name: clamav
+          name: etc
+        - name: cloud-secret
+          secret:
+            secretName: cloud-secret
+        - name: ks-cloud-config
+          configMap:
+            name: ks-cloud-config
+            items:
+              - key: "clusterData"
+                path: "clusterData.json"
+        - name: config
+          configMap:
+            name: node-agent
+            items:
+              - key: "config.json"
+                path: "config.json"
+      containers:
+        - name: node-agent
+          image: "quay.io/kubescape/node-agent:v0.3.3"
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: 7888
+            initialDelaySeconds: 60
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 7888
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1400Mi
+            requests:
+              cpu: 100m
+              memory: 180Mi
+          env:
+            - name: GOMEMLIMIT
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.memory
+                  divisor: '1'
+            - name: GOMAXPROCS
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.cpu
+                  divisor: '1'
+            - name: HOST_ROOT
+              value: "/host"
+            - name: KS_LOGGER_LEVEL
+              value: "info"
+            - name: KS_LOGGER_NAME
+              value: "zap"
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NAMESPACE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: KUBELET_ROOT
+              value: "/var/lib/kubelet"
+            - name: AGENT_VERSION
+              value: "v0.3.3"
+            - name: NodeName
+          securityContext:
+            runAsUser: 0
+            privileged: false
+            capabilities:
+              add:
+                - SYS_ADMIN
+                - SYS_PTRACE
+                - NET_ADMIN
+                - SYSLOG
+                - SYS_RESOURCE
+                - IPC_LOCK
+                - NET_RAW
+            seLinuxOptions:
+              type: spc_t
+          volumeMounts:
+          - mountPath: /host
+            name: host
+            readOnly: true
+          - mountPath: /var/lib/kubelet
+            name: kubeletdir
+          - mountPath: /run
+            name: run
+          - mountPath: /var
+            name: var
+            readOnly: true
+          - mountPath: /lib/modules
+            name: modules
+            readOnly: true
+          - mountPath: /sys/kernel/debug
+            name: debugfs
+          - mountPath: /sys/fs/cgroup
+            name: cgroup
+            readOnly: true
+          - mountPath: /sys/fs/bpf
+            name: bpffs
+          - mountPath: /data
+            name: data
+          - mountPath: /profiles
+            name: profiles
+          - mountPath: /boot
+            name: boot
+            readOnly: true
+          - mountPath: /clamav
+            name: clamrun
+          - name: cloud-secret
+            mountPath: /etc/credentials
+            readOnly: true
+          - name: ks-cloud-config
+            mountPath: /etc/config/clusterData.json
+            readOnly: true
+            subPath: "clusterData.json"
+          - name: config
+            mountPath: /etc/config/config.json
+            readOnly: true
+            subPath: "config.json"
+      nodeSelector:
+        kubernetes.io/os: linux
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
+      tolerations:

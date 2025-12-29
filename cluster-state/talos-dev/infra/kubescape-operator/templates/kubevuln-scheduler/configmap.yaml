@@ -1,0 +1,22 @@
+---
+# Source: kubescape-operator/templates/kubevuln-scheduler/configmap.yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: kubevuln-scheduler
+  namespace: kubescape
+  labels:
+    helm.sh/chart: kubescape-operator-1.30.0
+    app.kubernetes.io/name: kubescape-operator
+    app.kubernetes.io/instance: kubescape
+    app.kubernetes.io/component: kubevuln-scheduler
+    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubescape
+    app: kubevuln-scheduler
+    tier: ks-control-plane
+    kubescape.io/ignore: "true"
+    kubescape.io/tier: "core"
+data:
+  request-body.json: |-
+    {"commands":[{"commandName":"scan","designators":[{"designatorType":"Attributes","attributes":{}}]}]}

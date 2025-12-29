@@ -1,0 +1,28 @@
+---
+# Source: kubescape-operator/templates/storage/apiservice.yaml
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: "v1beta1.spdx.softwarecomposition.kubescape.io"
+  annotations:
+    
+  labels:
+    helm.sh/chart: kubescape-operator-1.30.0
+    app.kubernetes.io/name: kubescape-operator
+    app.kubernetes.io/instance: kubescape
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubescape
+    app: storage
+    tier: ks-control-plane
+    kubescape.io/ignore: "true"
+spec:
+  group: "spdx.softwarecomposition.kubescape.io"
+  groupPriorityMinimum: 1000
+  versionPriority: 15
+  version: "v1beta1"
+  service:
+    name: storage
+    namespace: kubescape
+  caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURMRENDQWhTZ0F3SUJBZ0lSQU1SVnIzUENrbno5VWxEVXNVQy96WFV3RFFZSktvWklodmNOQVFFTEJRQXcKSURFZU1Cd0dBMVVFQXhNVmMzUnZjbUZuWlMxdU9UUlpla2wyTVZkaUxXTmhNQjRYRFRJMU1USXlPVEU1TWpJdwpObG9YRFRJM01USXlPVEU1TWpJd05sb3dJREVlTUJ3R0ExVUVBeE1WYzNSdmNtRm5aUzF1T1RSWmVrbDJNVmRpCkxXTmhNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQXRIV1BpQVUwcHMzTUdhWisKaXZCMGhOUXpnM0IwejhpTFJDSUR3T2RTNGJaZ0dDd1lDQWdsVytmOGlKSkxIbGFTa0dzYmxtY1huR1BHWnB3RApFMCtLbmRVR0ZRcUFEbEFFM0JPU1RrazVsL0NXbk5FNHErWitGaEtjSWJOY3RTZk9waE1sdHQxY2ppazdLNHVPCmI5d25TaE1CQ2oxWG5BSGpLL0R5WFRkTFFBbEdiK3ozbWRLT0Y4eWg0aVVJME4wUGxTRW9hMG5naVBrS21SSzUKUklUbVF6dEpWSlJXbWVGMEJVVEYzTDlkV3dKNENoVU5URHZORGIyQy9iRTlvQTJDTml4OTNpTzMzM3R0dEpPYQo5QVZDR0h4R2hPSG5sTXdpVGt4Zmt1Q1VVY1Y4MWRZSFZmVkZkVVpiYmoxSEREbTQ1cFVDSGg5OGJtWmJSdEVXCmYzdHpiUUlEQVFBQm8yRXdYekFPQmdOVkhROEJBZjhFQkFNQ0FxUXdIUVlEVlIwbEJCWXdGQVlJS3dZQkJRVUgKQXdFR0NDc0dBUVVGQndNQ01BOEdBMVVkRXdFQi93UUZNQU1CQWY4d0hRWURWUjBPQkJZRUZHbWd2Y2c2cFpFMQoxbG52VFJIWUpXekI5cm5UTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCQVFBMjZlSlF6NkJpL2ZESzhKeDdvWFJhCjBWTEplNDVWbllTcVgvR3ZWRDJPdTRpdDJ5RXU1cFFTQXJlVXVrZFo1L2JNVEdOb3JnNDJmV2pubnBjQjlDb1AKczNRWW1NTUZENGJ2WEN5TW5uN3VGbnE5N1BrZDBkT1lpZkswOVREVFYyaWhMTmhDS051NWdyWG9HQU1RRm5FOApWYmRZMUNGeElxRFV0QVZ3MGtlUFFVZ1R6b1pqMGp5dWVYUGRYSnVQdXhOWFB3TlJ1a1hNSmRuZjFyajdVUGxjCkV0WGRHWmlkeS9DNUE1ZDgxa1FPRzRsZzZrSy9mR1JFdUZsR1VmM3p6MUVvZmxoaE5WUDRCVVN0alFYU093Q24KOTdZTVZMMENjM08xbi83b0U2L09HYmtkU1JlLzl1dkJkWjg4VlJsSHN3eWJNTFlzaWdpbGYxb2VaQjAzZjZZWAotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==

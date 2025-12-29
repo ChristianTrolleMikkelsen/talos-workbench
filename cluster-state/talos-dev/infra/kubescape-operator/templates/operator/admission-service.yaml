@@ -1,0 +1,29 @@
+---
+# Source: kubescape-operator/templates/operator/admission-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "kubescape-admission-webhook"
+  namespace: kubescape
+  annotations:
+    
+  labels:
+    helm.sh/chart: kubescape-operator-1.30.0
+    app.kubernetes.io/name: kubescape-operator
+    app.kubernetes.io/instance: kubescape
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubescape
+    app: operator
+    tier: ks-control-plane
+    kubescape.io/ignore: "true"
+spec:
+  ports:
+    - port: 443
+      targetPort: 8443
+  selector:
+      app.kubernetes.io/name: kubescape-operator
+      app.kubernetes.io/instance: kubescape
+      app.kubernetes.io/component: operator
+  type: ClusterIP  # Or use LoadBalancer or NodePort if needed

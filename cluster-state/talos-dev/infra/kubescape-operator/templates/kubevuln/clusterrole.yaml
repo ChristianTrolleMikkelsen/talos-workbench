@@ -1,0 +1,26 @@
+---
+# Source: kubescape-operator/templates/kubevuln/clusterrole.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: kubevuln
+  annotations:
+    
+  labels:
+    helm.sh/chart: kubescape-operator-1.30.0
+    app.kubernetes.io/name: kubescape-operator
+    app.kubernetes.io/instance: kubescape
+    app.kubernetes.io/component: kubevuln
+    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubescape
+    app: kubevuln
+    tier: ks-control-plane
+    kubescape.io/ignore: "true"
+rules:
+  - apiGroups: ["spdx.softwarecomposition.kubescape.io"]
+    resources: ["vulnerabilitymanifests", "vulnerabilitymanifestsummaries", "openvulnerabilityexchangecontainers", "sbomsyfts", "sbomsyftfiltereds"]
+    verbs: ["create", "get", "update", "watch", "list", "patch"]
+  - apiGroups: ["spdx.softwarecomposition.kubescape.io"]
+    resources: ["containerprofiles"]
+    verbs: ["get", "watch", "list"]

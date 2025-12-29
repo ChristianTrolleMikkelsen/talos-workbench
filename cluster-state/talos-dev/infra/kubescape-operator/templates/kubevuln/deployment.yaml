@@ -1,0 +1,144 @@
+---
+# Source: kubescape-operator/templates/kubevuln/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubevuln
+  namespace: kubescape
+  annotations:
+    
+  labels:
+    helm.sh/chart: kubescape-operator-1.30.0
+    app.kubernetes.io/name: kubescape-operator
+    app.kubernetes.io/instance: kubescape
+    app.kubernetes.io/component: kubevuln
+    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubescape
+    app: kubevuln
+    tier: ks-control-plane
+    kubescape.io/ignore: "true"
+    kubescape.io/tier: "core"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kubescape-operator
+      app.kubernetes.io/instance: kubescape
+      app.kubernetes.io/component: kubevuln
+  template:
+    metadata:
+      annotations:
+        
+        checksum/cloud-secret: 192498af36fa8b505f01b472407fcc09b948e1259f80663d34f3f3885cdf0d25
+        checksum/cloud-config: 6a6fa5c4e03cfff5dda70cb3b1cbdc803ee0d20b175e7bb06a1eb17c93d5321f
+      labels:
+        helm.sh/chart: kubescape-operator-1.30.0
+        app.kubernetes.io/name: kubescape-operator
+        app.kubernetes.io/instance: kubescape
+        app.kubernetes.io/component: kubevuln
+        app.kubernetes.io/version: "1.30.0"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/part-of: kubescape
+        app: kubevuln
+        tier: ks-control-plane
+        kubescape.io/ignore: "true"
+        kubescape.io/tier: "core"
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsUser: 65532
+        fsGroup: 65532
+      containers:
+        - name: kubevuln
+          image: "quay.io/kubescape/kubevuln:v0.3.98"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /v1/liveness
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /v1/readiness
+              port: 8080
+          resources:
+            limits:
+              cpu: 1500m
+              ephemeral-storage: 10Gi
+              memory: 5000Mi
+            requests:
+              cpu: 300m
+              ephemeral-storage: 5Gi
+              memory: 1000Mi
+          env:
+            - name: GOMEMLIMIT
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.memory
+                  divisor: '1'
+            - name: GOMAXPROCS
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.cpu
+                  divisor: '1'
+            - name: KS_LOGGER_LEVEL
+              value: "info"
+            - name: KS_LOGGER_NAME
+              value: "zap"
+            - name: PRINT_POST_JSON
+              value: ""
+            - name: CA_MAX_VULN_SCAN_ROUTINES
+              value: "1"
+          args:
+            - -alsologtostderr
+            - -v=4
+            - 2>&1
+          volumeMounts:
+            - name: cloud-secret
+              mountPath: /etc/credentials
+              readOnly: true
+            - name: tmp-dir
+              mountPath: /tmp
+            - name: grype-db-cache
+              mountPath: /home/nonroot/anchore-resources/db
+            - name: ks-cloud-config
+              mountPath: /etc/config/clusterData.json
+              readOnly: true
+              subPath: "clusterData.json"
+            - name: grype-db
+              mountPath: /home/nonroot/.cache/grype
+      volumes:
+        - name: cloud-secret
+          secret:
+            secretName: cloud-secret
+        - name: tmp-dir
+          emptyDir: {}
+        - name: grype-db-cache
+          emptyDir: {}
+        - name: ks-cloud-config
+          configMap:
+            name: ks-cloud-config
+            items:
+            - key: "clusterData"
+              path: "clusterData.json"
+        - name: "grype-db"
+          emptyDir: {}
+      serviceAccountName: kubevuln
+      automountServiceAccountToken: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      affinity:
+      tolerations:

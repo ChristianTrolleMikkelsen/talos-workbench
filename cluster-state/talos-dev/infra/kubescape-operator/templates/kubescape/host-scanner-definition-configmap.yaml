@@ -1,0 +1,124 @@
+---
+# Source: kubescape-operator/templates/kubescape/host-scanner-definition-configmap.yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: host-scanner-definition
+  namespace: kubescape
+  annotations:
+    
+  labels:
+    helm.sh/chart: kubescape-operator-1.30.0
+    app.kubernetes.io/name: kubescape-operator
+    app.kubernetes.io/instance: kubescape
+    app.kubernetes.io/component: ks-cloud-config
+    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubescape
+    app: ks-cloud-config
+    tier: ks-control-plane
+    kubescape.io/ignore: "true"
+    kubescape.io/tier: "core"
+data:
+  host-scanner-yaml: |-
+    apiVersion: apps/v1
+    kind: DaemonSet
+    metadata:
+      name: host-scanner
+      namespace: kubescape
+      annotations:
+        
+      labels:
+        helm.sh/chart: kubescape-operator-1.30.0
+        app.kubernetes.io/name: kubescape-operator
+        app.kubernetes.io/instance: kubescape
+        app.kubernetes.io/component: host-scanner
+        app.kubernetes.io/version: "1.30.0"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/part-of: kubescape
+        app: host-scanner
+        tier: ks-control-plane
+        kubescape.io/ignore: "true"
+    spec:
+      selector:
+        matchLabels:
+          app.kubernetes.io/name: kubescape-operator
+          app.kubernetes.io/instance: kubescape
+          app.kubernetes.io/component: host-scanner
+      template:
+        metadata:
+          annotations:
+            
+          labels:
+            helm.sh/chart: kubescape-operator-1.30.0
+            app.kubernetes.io/name: kubescape-operator
+            app.kubernetes.io/instance: kubescape
+            app.kubernetes.io/component: host-scanner
+            app.kubernetes.io/version: "1.30.0"
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/part-of: kubescape
+            app: host-scanner
+            tier: ks-control-plane
+            kubescape.io/ignore: "true"
+            kubescape.io/tier: "core"
+            name: host-scanner
+        spec:
+          nodeSelector:
+            kubernetes.io/os: linux
+          affinity:
+          tolerations:
+            - effect: NoSchedule
+              key: node-role.kubernetes.io/control-plane
+              operator: Exists
+            - effect: NoSchedule
+              key: node-role.kubernetes.io/master
+              operator: Exists
+          containers:
+          - name: host-sensor
+            image: "quay.io/kubescape/host-scanner:v1.0.78"
+            imagePullPolicy: IfNotPresent
+            securityContext:
+              allowPrivilegeEscalation: true
+              privileged: true
+              readOnlyRootFilesystem: true
+            env:
+            - name: KS_LOGGER_LEVEL
+              value: "info"
+            - name: KS_LOGGER_NAME
+              value: "zap"
+            ports:
+              - name: scanner # Do not change port name
+                containerPort: 7888
+                protocol: TCP
+            resources:
+              limits:
+                cpu: 0.4m
+                memory: 400Mi
+              requests:
+                cpu: 0.1m
+                memory: 200Mi
+            volumeMounts:
+            - mountPath: /host_fs
+              name: host-filesystem
+            startupProbe:
+              httpGet:
+                path: /readyz
+                port: 7888
+              failureThreshold: 30
+              periodSeconds: 1
+            livenessProbe:
+              httpGet:
+                path: /healthz
+                port: 7888
+              periodSeconds: 10
+          terminationGracePeriodSeconds: 120
+          dnsPolicy: ClusterFirstWithHostNet
+          serviceAccountName: node-agent
+          automountServiceAccountToken: false
+          volumes:
+          - hostPath:
+              path: /
+              type: Directory
+            name: host-filesystem
+          hostPID: true
+          hostIPC: true

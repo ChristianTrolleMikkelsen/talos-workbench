@@ -1,0 +1,183 @@
+---
+# Source: kubescape-operator/templates/operator/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: operator
+  namespace: kubescape
+  annotations:
+    
+  labels:
+    helm.sh/chart: kubescape-operator-1.30.0
+    app.kubernetes.io/name: kubescape-operator
+    app.kubernetes.io/instance: kubescape
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubescape
+    app: operator
+    tier: ks-control-plane
+    kubescape.io/ignore: "true"
+    kubescape.io/tier: "core"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 0%
+      maxUnavailable: 100%
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kubescape-operator
+      app.kubernetes.io/instance: kubescape
+      app.kubernetes.io/component: operator
+  template:
+    metadata:
+      annotations:
+        
+        checksum/operator-config: df6b7d7f1e5c1c5638e84eb84d634ffa07add0025b557752a7e8ee405d45d7ad
+        checksum/cloud-secret: 192498af36fa8b505f01b472407fcc09b948e1259f80663d34f3f3885cdf0d25
+        checksum/cloud-config: 6a6fa5c4e03cfff5dda70cb3b1cbdc803ee0d20b175e7bb06a1eb17c93d5321f
+        checksum/capabilities-config: fe061f9a79092b47a193ec837baa6b93a1dfb0232198a44dde7478717f6119d3
+        checksum/matching-rules-config: 7732c83da6cd6962f78ef323206eba8810b7a4fa3f21d1608d9c083428a6eb8f
+      labels:
+        helm.sh/chart: kubescape-operator-1.30.0
+        app.kubernetes.io/name: kubescape-operator
+        app.kubernetes.io/instance: kubescape
+        app.kubernetes.io/component: operator
+        app.kubernetes.io/version: "1.30.0"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/part-of: kubescape
+        app: operator
+        tier: ks-control-plane
+        kubescape.io/ignore: "true"
+        kubescape.io/tier: "core"
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsUser: 65532
+        fsGroup: 65532
+      containers:
+        - name: operator
+          image: "quay.io/kubescape/operator:v0.2.119"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+          ports:
+            - name: "trigger-port"
+              containerPort: 4002
+              protocol: TCP
+            - name: "readiness-port"
+              containerPort: 8000
+              protocol: TCP
+            - name: "admission-port"
+              containerPort: 8443
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /v1/liveness
+              port: readiness-port
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /v1/readiness
+              port: readiness-port
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources:
+            limits:
+              cpu: 300m
+              memory: 300Mi
+            requests:
+              cpu: 50m
+              memory: 100Mi
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: HELM_RELEASE
+              value: kubescape-operator-1.30.0
+            - name: GOMEMLIMIT
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.memory
+                  divisor: '1'
+            - name: GOMAXPROCS
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.cpu
+                  divisor: '1'
+            - name: KS_LOGGER_LEVEL
+              value: "info"
+            - name: KS_LOGGER_NAME
+              value: "zap"
+          volumeMounts:
+            - name: cloud-secret
+              mountPath: /etc/credentials
+              readOnly: true
+            - name: tmp-dir
+              mountPath: /tmp
+            - name: ks-cloud-config
+              mountPath: /etc/config/clusterData.json
+              readOnly: true
+              subPath: "clusterData.json"
+            - name: ks-capabilities
+              mountPath: /etc/config/capabilities.json
+              readOnly: true
+              subPath: "capabilities.json"
+            - name: cs-matching-rules
+              mountPath: /etc/config/matchingRules.json
+              readOnly: true
+              subPath: "matchingRules.json"
+            - name: config
+              mountPath: /etc/config/config.json
+              readOnly: true
+              subPath: "config.json"
+            - name: tls-certs
+              mountPath: /etc/certs
+              readOnly: true
+      volumes:
+        - name: cloud-secret
+          secret:
+            secretName: cloud-secret
+        - name: tls-certs
+          secret:
+            secretName: kubescape-admission-webhook.kubescape.svc-kubescape-tls-pair
+        - name: tmp-dir
+          emptyDir: {}
+        - name: ks-cloud-config
+          configMap:
+            name: ks-cloud-config
+            items:
+            - key: "clusterData"
+              path: "clusterData.json"
+        - name: ks-capabilities
+          configMap:
+            name: ks-capabilities
+            items:
+              - key: "capabilities"
+                path: "capabilities.json"
+        - name: config
+          configMap:
+            name: operator
+            items:
+            - key: "config.json"
+              path: "config.json"
+        - name: cs-matching-rules
+          configMap:
+            name: cs-matching-rules
+            items:
+              - key: "matchingRules.json"
+                path: "matchingRules.json"
+      serviceAccountName: operator
+      automountServiceAccountToken: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      affinity:
+      tolerations:
