@@ -39,7 +39,7 @@ spec:
         checksum/operator-config: df6b7d7f1e5c1c5638e84eb84d634ffa07add0025b557752a7e8ee405d45d7ad
         checksum/cloud-secret: 192498af36fa8b505f01b472407fcc09b948e1259f80663d34f3f3885cdf0d25
         checksum/cloud-config: 6a6fa5c4e03cfff5dda70cb3b1cbdc803ee0d20b175e7bb06a1eb17c93d5321f
-        checksum/capabilities-config: fe061f9a79092b47a193ec837baa6b93a1dfb0232198a44dde7478717f6119d3
+        checksum/capabilities-config: 7b86f4e331d180b8377302e6a3e43e012a36a886d223480e3ab3ae4c8d4038ca
         checksum/matching-rules-config: 7732c83da6cd6962f78ef323206eba8810b7a4fa3f21d1608d9c083428a6eb8f
       labels:
         helm.sh/chart: kubescape-operator-1.30.0

@@ -31,7 +31,7 @@ capabilities:
 
 serviceScanConfig:
   enabled: true
-  interval: 1d
+  interval: 24h
 
 configurations:
   prometheusAnnotations: enable
