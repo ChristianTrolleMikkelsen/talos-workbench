@@ -6,7 +6,7 @@ metadata:
   name: grafana
   namespace: monitoring
   labels:
-    helm.sh/chart: grafana-10.4.1
+    helm.sh/chart: grafana-10.4.2
     app.kubernetes.io/name: grafana
     app.kubernetes.io/instance: grafana
     app.kubernetes.io/version: "12.3.1"
@@ -22,14 +22,14 @@ spec:
   template:
     metadata:
       labels:
-        helm.sh/chart: grafana-10.4.1
+        helm.sh/chart: grafana-10.4.2
         app.kubernetes.io/name: grafana
         app.kubernetes.io/instance: grafana
         app.kubernetes.io/version: "12.3.1"
       annotations:
         checksum/config: 193541e059090ea2d342c4ed0eaf354aba33f4f16c18f457f3bfbe828476e80e
         checksum/sc-dashboard-provider-config: e70bf6a851099d385178a76de9757bb0bef8299da6d8443602590e44f05fdf24
-        checksum/secret: d1e91e5539090817bd22faf1a41d7d37acbe26f685d73ce860f4c94845dc914f
+        checksum/secret: e414600e7d2423579d2c5d52b007638c6200dffafa6c0fd96366900349824cba
         kubectl.kubernetes.io/default-container: grafana
     spec:
       
@@ -125,13 +125,13 @@ spec:
             failureThreshold: 10
             httpGet:
               path: /api/health
-              port: 3000
+              port: grafana
             initialDelaySeconds: 60
             timeoutSeconds: 30
           readinessProbe:
             httpGet:
               path: /api/health
-              port: 3000
+              port: grafana
       volumes:
         - name: config
           configMap:
