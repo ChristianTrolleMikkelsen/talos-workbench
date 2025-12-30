@@ -48,7 +48,4 @@ talosctl --talosconfig $TALOSCONFIG kubeconfig .
 export KUBECONFIG=$(pwd)/kubeconfig  
 
 echo " - Talosconfig after bootstrap and kubeconfig export: $TALOSCONFIG"
-
-echo " - Waiting 10s for overview of nodes..."
-sleep 10
-kubectl get nodes
+echo "Done"

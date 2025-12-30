@@ -5,7 +5,15 @@ operator:
   clusterSbomCacheEnabled: true
   builtInTrivyServer: true
 
+
 nodeCollector:
+  useNodeSelector: false
+
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
+
   volumeMounts:
     - name: var-lib-etcd
       mountPath: /var/lib/etcd

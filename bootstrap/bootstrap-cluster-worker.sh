@@ -20,11 +20,14 @@ echo " talosconfig after export: $TALOSCONFIG"
 
 talosctl apply-config --insecure --nodes $workerIp --file $configPath/worker.yaml
 
-echo " - Waiting for Talos worker to be ready..."
-echo " - Press any key to continue..."
-read -n 1 -s
+echo "Done"
 
-echo " - Waiting 10s for overview of nodes..."
-sleep 10
 
-kubectl get nodes
+#echo " - Waiting for Talos worker to be ready..."
+#echo " - Press any key to continue..."
+#read -n 1 -s
+
+#echo " - Waiting 10s for overview of nodes..."
+#sleep 10
+
+#kubectl get nodes

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ~/.bash_profile
+
 clusterName=talos-$1
 
 (cd ../cluster-state && ./add-cluster-env.sh $clusterName)
@@ -11,6 +13,8 @@ export GITHUB_TOKEN=$(pass-cli item view --vault-name Personal --item-title "Git
 export GITHUB_USER=ChristianTrolleMikkelsen
 
 ./bootstrap-cluster-cpl.sh $clusterName "$2"
+./bootstrap-wait-for-cluster-to-be-ready.sh
+./bootstrap-approve-kubelet-certificate.sh
 ./bootstrap-cluster-worker.sh $clusterName "$3"
 ./bootstrap-cluster-worker.sh $clusterName "$4"
 ./bootstrap-assign-worker-node-roles.sh $clusterName

@@ -19,3 +19,4 @@ flux bootstrap github \
   --branch=main \
   --path=./cluster-state/$clusterName \
   --personal
+echo "Done"
