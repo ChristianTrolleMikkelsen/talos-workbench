@@ -43,7 +43,6 @@ echo " - Press any key to continue..."
 read -n 1 -s
 
 talosctl --talosconfig $TALOSCONFIG bootstrap
-
 talosctl --talosconfig $TALOSCONFIG kubeconfig .
 export KUBECONFIG=$(pwd)/kubeconfig  
 

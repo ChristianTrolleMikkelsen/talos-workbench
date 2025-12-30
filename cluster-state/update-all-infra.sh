@@ -101,7 +101,6 @@ kubectl create namespace kubescape --dry-run=client -o yaml | sed '/name: kubesc
 echo " - Updating headlamp"
 helm template headlamp headlamp/headlamp --namespace kube-system --include-crds -f headlamp-values.yaml --output-dir $infraDir
 
-#helm template kubescape kubescape/kubescape-operator -n kubescape --create-namespace --set clusterName=`kubectl config current-context` -f kubescape-values.yaml --output-dir $infraDir
 
 for folder in "."/*; do
   if [ -d "$folder" ]; then
