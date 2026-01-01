@@ -202,7 +202,7 @@ data:
   #
   # https://github.com/cilium/hubble/blob/master/Documentation/metrics.md
   hubble-metrics:
-    dns
+    dns:query;ignoreAAAA
     drop
     tcp
     flow
@@ -210,6 +210,14 @@ data:
     icmp
     httpV2:exemplars=true;labelsContext=source_ip,source_namespace,source_workload,destination_ip,destination_namespace,destination_workload,traffic_direction
   hubble-network-policy-correlation-enabled: "true"
+  # Enables hubble redact capabilities
+  hubble-redact-enabled: "true"
+  # Enables redaction of the http URL query part in flows
+  hubble-redact-http-urlquery: "true"
+  # Enables redaction of the http user info in flows
+  hubble-redact-http-userinfo: "true"
+  # Enables redaction of the Kafka API key part in flows
+  hubble-redact-kafka-apikey: "true"
   # An additional address for Hubble server to listen to (e.g. ":4244").
   hubble-listen-address: ":4244"
   hubble-disable-tls: "false"
@@ -218,8 +226,10 @@ data:
   hubble-tls-client-ca-files: /var/lib/cilium/tls/hubble/client-ca.crt
   ipam: "kubernetes"
   ipam-cilium-node-update-rate: "15s"
+  enable-node-ipam: "true"
 
   default-lb-service-ipam: "lbipam"
+  enable-egress-gateway: "true"
   egress-gateway-reconciliation-trigger-interval: "1s"
   enable-vtep: "false"
   vtep-endpoint: ""

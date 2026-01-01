@@ -30,9 +30,13 @@ helm template \
     --set operator.prometheus.enabled=true \
     --set hubble.enabled=true \
     --set hubble.metrics.enableOpenMetrics=true \
-    --set hubble.metrics.enabled="{dns,drop,tcp,flow,port-distribution,icmp,httpV2:exemplars=true;labelsContext=source_ip\,source_namespace\,source_workload\,destination_ip\,destination_namespace\,destination_workload\,traffic_direction}" \
+    --set hubble.metrics.enabled="{dns:query;ignoreAAAA,drop,tcp,flow,port-distribution,icmp,httpV2:exemplars=true;labelsContext=source_ip\,source_namespace\,source_workload\,destination_ip\,destination_namespace\,destination_workload\,traffic_direction}" \
+    --set hubble.redact.enabled="true" \
+    --set hubble.redact.http.urlQuery="true" \
     --set hubble.ui.enabled=true \
     --set hubble.relay.enabled=true \
+    --set nodeIPAM.enabled=true \
+    --set egressGateway.enabled=true \
     --include-crds \
     --output-dir $infraDir
 
