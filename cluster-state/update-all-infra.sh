@@ -38,6 +38,7 @@ helm template \
     --set egressGateway.enabled=true \
     --set bpf.masquerade=true \
     --set enableIPv4Masquerade=true \
+    --set nodePort.enabled=true \
     --include-crds \
     --output-dir $infraDir
 

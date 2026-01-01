@@ -166,7 +166,7 @@ data:
 
   kube-proxy-replacement: "false"
   bpf-lb-sock: "false"
-  enable-node-port: "false"
+  enable-node-port: "true"
   nodeport-addresses: ""
   enable-health-check-nodeport: "true"
   enable-health-check-loadbalancer-ip: "false"
