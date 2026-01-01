@@ -9,10 +9,8 @@ server:
   - web.enable-lifecycle
   - web.enable-remote-write-receiver
 
-##Drop all configs as we want Allot to manage all scrapes
-serverFiles:
-  prometheus.yml:
-    scrape_configs: []
+##Drop all configs as we want Alloy to manage all scrapes
+scrapeConfigs: []
 
 alertmanager:
   ## If false, alertmanager will not be installed

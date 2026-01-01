@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/instance: prometheus
     app.kubernetes.io/version: v3.8.1
-    helm.sh/chart: prometheus-27.52.0
+    helm.sh/chart: prometheus-28.0.0
     app.kubernetes.io/part-of: prometheus
   name: prometheus-server
   namespace: monitoring
@@ -28,7 +28,6 @@ data:
     - /etc/config/alerting_rules.yml
     - /etc/config/rules
     - /etc/config/alerts
-    scrape_configs: []
   recording_rules.yml: |
     {}
   rules: |

@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/instance: prometheus
     app.kubernetes.io/version: v3.8.1
-    helm.sh/chart: prometheus-27.52.0
+    helm.sh/chart: prometheus-28.0.0
     app.kubernetes.io/part-of: prometheus
   name: prometheus-server
   namespace: monitoring
@@ -30,7 +30,7 @@ spec:
         app.kubernetes.io/name: prometheus
         app.kubernetes.io/instance: prometheus
         app.kubernetes.io/version: v3.8.1
-        helm.sh/chart: prometheus-27.52.0
+        helm.sh/chart: prometheus-28.0.0
         app.kubernetes.io/part-of: prometheus
     spec:
       enableServiceLinks: true
