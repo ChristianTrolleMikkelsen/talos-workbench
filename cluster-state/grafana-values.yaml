@@ -4,6 +4,11 @@ ingress:
 persistence:
   enabled: true
 
+admin:
+  existingSecret: "proton-grafana-admin"
+  userKey: admin-user
+  passwordKey: admin-password
+
 datasources:
   datasources.yaml:
     apiVersion: 1
