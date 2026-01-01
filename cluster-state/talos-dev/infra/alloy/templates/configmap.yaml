@@ -15,6 +15,11 @@ metadata:
     app.kubernetes.io/component: config
 data:
   config.alloy: |-
+    logging {
+      level  = "info"
+      format = "logfmt"
+    }
+    
     prometheus.exporter.unix "local_system" {
     }
     
@@ -55,6 +60,7 @@ data:
         field = "metadata.name!=spegel,spec.nodeName=" + coalesce(sys.env("HOSTNAME"), constants.hostname)
       }
     }
+    
     prometheus.scrape "pods" {
       targets    = discovery.kubernetes.pods.targets
       forward_to = [prometheus.remote_write.metrics_service.receiver]
@@ -70,11 +76,6 @@ data:
     prometheus.scrape "services" {
       targets    = discovery.kubernetes.services.targets
       forward_to = [prometheus.remote_write.metrics_service.receiver]
-    }
-    
-    logging {
-      level  = "info"
-      format = "logfmt"
     }
     
     loki.write "default" {
