@@ -6,11 +6,11 @@ echo " - Grafana... fetching password from ProtonPass"
 grafana_token=$(pass-cli item view --vault-name Personal --item-title "Grafana admin pwd for Talos k8s" --field Secret)
 echo $grafana_token > state/$clusterName/grafana.token
 echo "   - Saved to: state/$clusterName/grafana.token"
-grafanaPwdEncoded=$(echo -n $grafana_token | base64 -b 0)
-grafanaUserEncoded=$(echo -n "admin" | base64 -b 0)
+#grafanaPwdEncoded=$(echo -n $grafana_token | base64 -b 0)
+#grafanaUserEncoded=$(echo -n "admin" | base64 -b 0)
 #kubectl patch secret -n monitoring grafana -p="{\"data\":{\"admin-password\":\"$grafanaEncoded\"}}"
 #echo "   - K8s secret patched"
-kubectl create secret -n monitoring generic proton-grafana-admin --from-literal=admin-user=$grafanaUserEncoded --from-literal=admin-password=$grafanaPwdEncoded --dry-run=client -o yaml | kubectl apply -f -
+kubectl create secret -n monitoring generic proton-grafana-admin --from-literal=admin-user=admin --from-literal=admin-password=$grafana_token --dry-run=client -o yaml | kubectl apply -f -
 echo "   - secret created/updated: proton-grafana-admin"
 
 echo " - Headlamp... generating sa token and updating in ProtonPass"

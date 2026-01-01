@@ -7,6 +7,9 @@ ingress:
 persistence:
   enabled: true
 
+initChownData:
+  enabled: false
+
 admin:
   existingSecret: "proton-grafana-admin"
   userKey: admin-user
