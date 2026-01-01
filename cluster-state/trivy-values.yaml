@@ -5,6 +5,8 @@ operator:
   clusterSbomCacheEnabled: true
   builtInTrivyServer: true
 
+nodeSelector:
+  node-role.kubernetes.io/state: ""
 
 nodeCollector:
   useNodeSelector: false

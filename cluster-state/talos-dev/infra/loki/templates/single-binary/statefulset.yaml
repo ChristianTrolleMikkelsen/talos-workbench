@@ -133,6 +133,8 @@ spec:
                 app.kubernetes.io/instance: 'loki'
                 app.kubernetes.io/name: 'loki'
             topologyKey: kubernetes.io/hostname
+      nodeSelector:
+        node-role.kubernetes.io/state: ""
       volumes:
         - name: tmp
           emptyDir: {}

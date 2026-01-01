@@ -37,6 +37,9 @@ deploymentMode: SingleBinary
 
 singleBinary:
   replicas: 1
+  
+  nodeSelector:
+    node-role.kubernetes.io/state: ""
 
 # Zero out replica counts of other deployment modes
 backend:

@@ -9,6 +9,9 @@ server:
   - web.enable-lifecycle
   - web.enable-remote-write-receiver
 
+  nodeSelector:
+    node-role.kubernetes.io/state: ""
+
 ##Drop all configs as we want Alloy to manage all scrapes
 scrapeConfigs: []
 

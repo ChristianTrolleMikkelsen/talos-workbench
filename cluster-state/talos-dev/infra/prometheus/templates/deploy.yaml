@@ -104,6 +104,8 @@ spec:
               mountPath: /data
               subPath: ""
       dnsPolicy: ClusterFirst
+      nodeSelector:
+        node-role.kubernetes.io/state: ""
       securityContext:
         fsGroup: 65534
         runAsGroup: 65534

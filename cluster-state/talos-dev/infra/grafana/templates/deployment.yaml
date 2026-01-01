@@ -131,6 +131,8 @@ spec:
             httpGet:
               path: /api/health
               port: grafana
+      nodeSelector:
+        node-role.kubernetes.io/state: ""
       volumes:
         - name: config
           configMap:

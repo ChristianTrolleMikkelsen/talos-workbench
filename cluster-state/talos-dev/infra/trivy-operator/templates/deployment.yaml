@@ -80,3 +80,5 @@ spec:
       volumes:
         - emptyDir: {}
           name: cache-policies
+      nodeSelector:
+        node-role.kubernetes.io/state: ""

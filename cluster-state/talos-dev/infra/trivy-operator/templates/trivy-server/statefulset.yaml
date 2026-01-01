@@ -94,3 +94,5 @@ spec:
       volumes:
         - name: tmp-data
           emptyDir: {}
+      nodeSelector:
+        node-role.kubernetes.io/state: ""

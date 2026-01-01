@@ -3,6 +3,9 @@ pluginsManager:
   # -- Enable plugin manager
   enabled: true
 
+nodeSelector:
+  node-role.kubernetes.io/state: ""
+
 config:
   oidc:
     secret:
