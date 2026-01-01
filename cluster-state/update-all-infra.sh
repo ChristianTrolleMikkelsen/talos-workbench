@@ -35,8 +35,9 @@ helm template \
     --set hubble.redact.http.urlQuery="true" \
     --set hubble.ui.enabled=true \
     --set hubble.relay.enabled=true \
-    --set nodeIPAM.enabled=true \
     --set egressGateway.enabled=true \
+    --set bpf.masquerade=true \
+    --set enableIPv4Masquerade=true \
     --include-crds \
     --output-dir $infraDir
 
