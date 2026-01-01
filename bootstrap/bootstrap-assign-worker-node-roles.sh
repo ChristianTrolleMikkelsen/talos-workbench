@@ -28,5 +28,9 @@ for node in $nodes; do
   kubectl label node $node node-role.kubernetes.io/worker=
 done
 
+echo " - Assigning state role to first node..."
+first_node=$(echo "$nodes" | head -n 1)
+kubectl label node $first_node node-role.kubernetes.io/state=
+
 kubectl get nodes --no-headers
-echo " - Worker roles assigned."
+echo " - Worker and state roles assigned."
