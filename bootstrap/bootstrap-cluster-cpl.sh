@@ -9,7 +9,9 @@ clusterName=$1
 cplIp=$2
 configPath=state/$clusterName
 cplConfig=$configPath/controlplane.yaml
-workerConfig=$configPath/worker.yaml
+vmWorkerConfig=$configPath/worker.yaml
+mbaWorkerConfig=$configPath/mba-worker.yaml
+nvrWorkerConfig=$configPath/nvr-worker.yaml
 
 mkdir -p $configPath
 
@@ -22,14 +24,27 @@ talosctl gen config $clusterName https://$cplIp:6443 --output-dir $configPath --
 
 echo " pathcing cni..."
 talosctl machineconfig patch $cplConfig --patch @cni-patch.yml -o $cplConfig
-talosctl machineconfig patch $workerConfig --patch @cni-patch.yml -o $workerConfig
-
-echo " patching disks..."
-talosctl machineconfig patch $workerConfig --patch @disk-patch.yml -o $workerConfig
+talosctl machineconfig patch $vmWorkerConfig --patch @cni-patch.yml -o $vmWorkerConfig
 
 echo " patching for rotate-server-certificates to enable monitoring..."
 talosctl machineconfig patch $cplConfig --patch @metrics-patch.yml -o $cplConfig
-talosctl machineconfig patch $workerConfig --patch @metrics-patch.yml -o $workerConfig
+talosctl machineconfig patch $vmWorkerConfig --patch @metrics-patch.yml -o $vmWorkerConfig
+
+echo " generating specific worker configs for mba and nvr..."
+cp -f $vmWorkerConfig/worker.yaml $mbaWorkerConfig
+cp -f $vmWorkerConfig/worker.yaml $nvrWorkerConfig
+echo "   patching specific worker configs..."
+
+echo "     patching vm disks to have /dev/sdb for data..."
+talosctl machineconfig patch $vmWorkerConfig --patch @disk-patch.yml -o $vmWorkerConfig
+
+#MBA only have 1 disk, for now we dont do anything special
+#echo "     patching mba disks..."
+#talosctl machineconfig patch $mbaWorkerConfig --patch @disk-patch.yml -o $mbaWorkerConfig
+
+#NVR
+#echo "     patching nvr disks..."
+#talosctl machineconfig patch $nvrWorkerConfig --patch @disk-patch.yml -o $nvrWorkerConfig
 
 talosctl apply-config --insecure --nodes $cplIp --file $configPath/controlplane.yaml
 
