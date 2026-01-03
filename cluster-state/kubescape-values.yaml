@@ -9,6 +9,7 @@ capabilities:
   # Continuous Scanning continuously evaluates the security posture of your cluster.
   continuousScan: enable
   nodeScan: enable
+  networkPolicyService: enable
 
   # ====== Image vulnerabilities scanning related capabilities ======
   #

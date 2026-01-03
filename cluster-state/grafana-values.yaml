@@ -10,6 +10,8 @@ persistence:
 initChownData:
   enabled: false
 
+adminUser: admin
+#adminPassword: admin
 admin:
   existingSecret: "proton-grafana-admin"
   userKey: admin-user
