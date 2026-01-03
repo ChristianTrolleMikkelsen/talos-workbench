@@ -30,6 +30,9 @@ echo " patching for rotate-server-certificates to enable monitoring..."
 talosctl machineconfig patch $cplConfig --patch @metrics-patch.yml -o $cplConfig
 talosctl machineconfig patch $vmWorkerConfig --patch @metrics-patch.yml -o $vmWorkerConfig
 
+echo " pathcing worker label..."
+talosctl machineconfig patch $vmWorkerConfig --patch @worker-label-patch.yml -o $vmWorkerConfig
+
 echo " generating specific worker configs for mba and nvr..."
 cp -f $vmWorkerConfig/worker.yaml $mbaWorkerConfig
 cp -f $vmWorkerConfig/worker.yaml $nvrWorkerConfig
@@ -37,6 +40,8 @@ echo "   patching specific worker configs..."
 
 echo "     patching vm disks to have /dev/sdb for data..."
 talosctl machineconfig patch $vmWorkerConfig --patch @disk-patch.yml -o $vmWorkerConfig
+echo "     patching worker vms to have node label 'state'..."
+talosctl machineconfig patch $vmWorkerConfig --patch @state-label-patch.yml -o $vmWorkerConfig
 
 #MBA only have 1 disk, for now we dont do anything special
 #echo "     patching mba disks..."
