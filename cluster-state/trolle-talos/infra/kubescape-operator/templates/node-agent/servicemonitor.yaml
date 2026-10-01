@@ -1,0 +1,4 @@
+---
+# Source: kubescape-operator/templates/node-agent/servicemonitor.yaml
+# If prometheus enabled, add prometheus exporter
+

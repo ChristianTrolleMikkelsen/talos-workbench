@@ -1,0 +1,43 @@
+---
+# Source: kubescape-operator/templates/operator/admission-webhook/webhook.yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: kubescape-admission-webhook
+  annotations:
+    
+  labels:
+    helm.sh/chart: kubescape-operator-1.40.4
+    app.kubernetes.io/name: kubescape-operator
+    app.kubernetes.io/instance: kubescape
+    app.kubernetes.io/component: operator
+    app.kubernetes.io/version: "1.40.4"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubescape
+    app: operator
+    tier: ks-control-plane
+    kubescape.io/ignore: "true"
+webhooks:
+  - name: validation.kubescape.admission
+    clientConfig:
+      service:
+        name: kubescape-admission-webhook
+        namespace: kubescape
+        path: /validate
+        port: 443
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURJRENDQWdpZ0F3SUJBZ0lSQU01VVUyYndBVVZ2eGV1a25ZTkxOYTR3RFFZSktvWklodmNOQVFFTEJRQXcKR2pFWU1CWUdBMVVFQXd3UEtpNXJkV0psYzJOaGNHVXVjM1pqTUI0WERUSTJNVEF3TVRFNU1UYzBOVm9YRFRNMgpNRGt5T0RFNU1UYzBOVm93R2pFWU1CWUdBMVVFQXd3UEtpNXJkV0psYzJOaGNHVXVjM1pqTUlJQklqQU5CZ2txCmhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBdnpWLzRJay9YQ1FQN0FSZUpoc1RvRVRMN3Q5cFA2VzEKK3g5WHI4TWx0THdMRUsxWThNbnVxdkhXbDBycjJKSzVLcE5xZUhqY3Z2WnBFbExRaFBQTlBLcHhjWVBnZWYwOQpmYUViQ2hValhkOXFFMUV2ZjU4QmU5L0R5c2UzY3VMVVRQWU9udWZjdnhSWkhGZ3N0SVRXTEZyTm4yeGxQN282ClBiOXBtV3h5N0crNFVsUlMrQzZFRzZSVUd2b3JCUGZqM3lrajc0UzBadGVFejRiREVmaUw2M2R3bnFoKzkzUjkKMkR1VzZiSDJZaHpqZTZpNHk3dDRncG84cE5oSmY5and6ZU1mc3pqOFJ4b1dDaVk2TzNQODVjK0VMbGxVK0N2aQpRelA1SVk4d3B3VVgwT2FuUllValRoNVV1dkpiaEJZTUNHSTUvR0IyZ2RoYjQra2RueHVlZ1FJREFRQUJvMkV3Clh6QU9CZ05WSFE4QkFmOEVCQU1DQXFRd0hRWURWUjBsQkJZd0ZBWUlLd1lCQlFVSEF3RUdDQ3NHQVFVRkJ3TUMKTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRkZ3aUxLVS91WEtscmR0Nk43aThINzRIS3VsdApNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUJ3SGE4aXVneVJjMVJqNlU5L29GSmZPaGw5TWNwMTR3RGptZFQ0CkllbzhuYkluV0tLZ0dyMENOVjdzbWZRVDRHQkFBVXlDNlFWa3ZBVkpYTlhOVlhIcXFqZXdONXl0cjhhci9mNHkKVGhJRU9XbzRYTFBKN2tvRm50aXdWeElUektsUmtXQU1HWWQ3Qm43S3h3NEZzKzhXS1J3djhGckwxWHJzYWdNRwpFNEFJWGlVcjIvT1EwaXByZzBjMXNhZDhmS0drMHR5ZTNLbFo5RnJmZjhEN0puVmNTc2gybEx5RVdSNWJzMllSCkVFcVNYeHEwcW9nY283Z2FBeG1oOE5tWGtQbkVBTkVtTjdiMmlGbmJoakJySFlzMXdWaHJVNkpQdmMyY3U0SGMKQWRNLzFFd3JFaHlINzFwQk9Ybm5aMC8vckt4UVA2WEVYQW1yRUIvTEo0M1p5VCt1Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+    admissionReviewVersions: ["v1"]
+    sideEffects: None
+    rules:
+      - operations: ["CREATE", "UPDATE", "DELETE", "CONNECT"]
+        apiGroups: ["*"]
+        apiVersions: ["v1"]
+        resources: ["pods", "pods/exec", "pods/portforward", "pods/attach", "clusterrolebindings", "rolebindings"]
+        scope: "*"
+      - operations: ["CREATE"]
+        apiGroups: ["networking.k8s.io"]
+        apiVersions: ["v1"]
+        resources: ["networkpolicies"]
+        scope: "*"
+    failurePolicy: Ignore
+

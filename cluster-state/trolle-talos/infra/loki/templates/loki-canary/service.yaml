@@ -1,0 +1,24 @@
+---
+# Source: loki/templates/loki-canary/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki-canary
+  namespace: monitoring
+  labels:
+    helm.sh/chart: loki-18.13.7
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: loki
+    app.kubernetes.io/version: "3.7.8"
+    app.kubernetes.io/component: canary
+spec:
+  type: ClusterIP
+  ports:
+    - name: http-metrics
+      port: 3500
+      targetPort: http-metrics
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: loki
+    app.kubernetes.io/component: canary

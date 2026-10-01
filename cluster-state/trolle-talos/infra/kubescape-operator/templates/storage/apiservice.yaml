@@ -1,0 +1,29 @@
+---
+# Source: kubescape-operator/templates/storage/apiservice.yaml
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: v1beta1.spdx.softwarecomposition.kubescape.io
+  annotations:
+    
+  labels:
+    helm.sh/chart: kubescape-operator-1.40.4
+    app.kubernetes.io/name: kubescape-operator
+    app.kubernetes.io/instance: kubescape
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/version: "1.40.4"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubescape
+    app: storage
+    tier: ks-control-plane
+    kubescape.io/ignore: "true"
+spec:
+  group: "spdx.softwarecomposition.kubescape.io"
+  groupPriorityMinimum: 1000
+  versionPriority: 15
+  version: "v1beta1"
+  service:
+    name: storage
+    namespace: kubescape
+  caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURGVENDQWYyZ0F3SUJBZ0lRYkpETGdxVy9mYXNSbDF4UjZraVFGVEFOQmdrcWhraUc5dzBCQVFzRkFEQVYKTVJNd0VRWURWUVFERXdwemRHOXlZV2RsTFdOaE1CNFhEVEkyTVRBd01URTVNVGMwTlZvWERUSTRNRGt6TURFNQpNVGMwTlZvd0ZURVRNQkVHQTFVRUF4TUtjM1J2Y21GblpTMWpZVENDQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFECmdnRVBBRENDQVFvQ2dnRUJBTFZiUmJSQkNIK1AyNnBLamVHcTlNc2thZ1JMM3FuUW8vd2NpYWsyUXBzTTc5RFAKM25aVkpVK2xsR0tkVlo2b2lnTFh3VmdLbVFONmpiSGRYRUFlRUlqV1lNdTJNRk1QZW9sVE5LM1hGUkY4MEZmWQplT2VJK1dxOTRwRTVNcEh1Y0RzZWN4VTBYOU1ETzFEeC9tRW9ya2FOSjV5SGZETUJ2Y0kvbUtVZnhSRzdvby9hCnRIdWRMeUl3TnRCNllLMUUvOXR3b0tjSjJ4cmFpbXNWV2NiSzlvbUVGQlUxWWtmZWdQNWxyVS9paml2cVRWSGsKVWJVSi9qeXRwSVRGTURtM1MwcEdIRlhVRUt1WTZqNWpPUXQrRmJxQk9abWpXckJBaUNsbXVZTFZCQTViMTJEdQpMbGJ4YXF4N28xN2FFWkJMOVZQeTFJUkJCaVZDOURNQUlmamtLWmtDQXdFQUFhTmhNRjh3RGdZRFZSMFBBUUgvCkJBUURBZ0trTUIwR0ExVWRKUVFXTUJRR0NDc0dBUVVGQndNQkJnZ3JCZ0VGQlFjREFqQVBCZ05WSFJNQkFmOEUKQlRBREFRSC9NQjBHQTFVZERnUVdCQlF0Q1p2Z3pRVjREZlp2RDNBeU0zSFlQY2xOOERBTkJna3Foa2lHOXcwQgpBUXNGQUFPQ0FRRUFEV1M5T2xGL09iQXhUWFdvUGV2b2Q1b2NTQzhsYU1JUFBJaU5UejJmekZidmZEc2pLWmtkCm1tUHdNbUloUGJYMk5ZZkRsbVlIU1ppeFk4eWI4bXlUengwNGdWOVErNnQ0d0U3NjFoUGpOU24yMkl0YU51d1kKZThQMUp5M3hUZVVGQlhDenZOY2Uwb1VZUmlQSmtMYkdDbk03UDNPd1RzcXJYNFh3Ukh4UWkwb3dxVGdmejRUaAp5M1pzVGFzMGJVa2djTWo2QXl2Y05zU1JOVHZkUDhvR3UxMkNUSlhOb1dWRTNFTzlhTWo2dWtYL1ZQN3hoWVgvClZ5YnJIbE1mWUpEeVJkMC93SHVSR3huZjErWFV3YjFiRVlxU0xQUElSK3JQcHF5REZ4bm9uamxpOGVLTXBoZUcKMTF5dkQ2MEJIZGh1WHRCTCtqUWdDYnpIbmdpREgzOWZMZz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+

@@ -1,0 +1,25 @@
+---
+# Source: kubescape-operator/templates/kubescape/host-scanner-definition-configmap.yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: host-scanner-definition
+  namespace: kubescape
+  annotations:
+    
+  labels:
+    helm.sh/chart: kubescape-operator-1.40.4
+    app.kubernetes.io/name: kubescape-operator
+    app.kubernetes.io/instance: kubescape
+    app.kubernetes.io/component: ks-cloud-config
+    app.kubernetes.io/version: "1.40.4"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: kubescape
+    app: ks-cloud-config
+    tier: ks-control-plane
+    kubescape.io/ignore: "true"
+    kubescape.io/tier: "core"
+data:
+  host-scanner-yaml: |-
+    
+

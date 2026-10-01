@@ -1,0 +1,139 @@
+---
+# Source: loki/templates/gateway/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loki-gateway
+  namespace: monitoring
+  labels:
+    helm.sh/chart: loki-18.13.7
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: loki
+    app.kubernetes.io/version: "3.7.8"
+    app.kubernetes.io/component: gateway
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: loki
+      app.kubernetes.io/instance: loki
+      app.kubernetes.io/component: gateway
+  template:
+    metadata:
+      annotations:
+        checksum/config: 267f43c08ec80ca887c82c41b5a4224bf28fc71ba5e2c5028dee50298abb59a5
+      labels:
+        app.kubernetes.io/name: loki
+        app.kubernetes.io/instance: loki
+        app.kubernetes.io/component: gateway
+    spec:
+      serviceAccountName: loki-gateway
+      automountServiceAccountToken: false
+      enableServiceLinks: true
+      
+      securityContext:
+        fsGroup: 101
+        runAsGroup: 101
+        runAsNonRoot: true
+        runAsUser: 101
+        seccompProfile:
+          type: RuntimeDefault
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: nginx
+          image: docker.io/nginxinc/nginx-unprivileged:1.31-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx
+            - name: tmp
+              mountPath: /tmp
+            - name: docker-entrypoint-d-override
+              mountPath: /docker-entrypoint.d
+        - name: exporter
+          image: ghcr.io/jkroepke/access-log-exporter:0.4.21
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4040
+              name: http-metrics
+            - containerPort: 8514
+              name: syslog
+          args:
+            - --nginx.scrape-url
+            - http://127.0.0.1:8080/stub_status
+            - --preset
+            - loki
+          resources:
+            limits: {}
+            requests: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 65532
+            runAsNonRoot: true
+            runAsUser: 65532
+            seccompProfile:
+              type: RuntimeDefault
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: http-metrics
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: http-metrics
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          volumeMounts:
+            - name: config
+              mountPath: /config.yaml
+              subPath: access-log-exporter.yaml
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/component: gateway
+                app.kubernetes.io/instance: 'loki'
+                app.kubernetes.io/name: 'loki'
+            topologyKey: kubernetes.io/hostname
+      volumes:
+        - name: config
+          configMap:
+            name: loki-gateway
+        - name: tmp
+          emptyDir: {}
+        - name: docker-entrypoint-d-override
+          emptyDir: {}
+
