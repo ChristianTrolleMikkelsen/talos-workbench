@@ -5,7 +5,8 @@ mkdir -p $infraDir
 helm repo add cilium https://helm.cilium.io/ > /dev/null
 helm repo add aqua https://aquasecurity.github.io/helm-charts/ > /dev/null
 helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/ > /dev/null
-helm repo add grafana https://grafana.github.io/helm-charts > /dev/null
+#helm repo add grafana https://grafana.github.io/helm-charts > /dev/null
+helm repo add grafana https://grafana-community.github.io/helm-charts > /dev/null
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts > /dev/null
 helm repo add kubescape https://kubescape.github.io/helm-charts/ > /dev/null
 helm repo add headlamp https://kubernetes-sigs.github.io/headlamp/ > /dev/null
@@ -18,7 +19,7 @@ echo " - Generating templates for infrastructure components"
 helm template \
     cilium \
     cilium/cilium \
-    --version 1.18.5 \
+    --version 1.20.2 \
     --namespace kube-system \
     --set ipam.mode=kubernetes \
     --set kubeProxyReplacement=false \
@@ -54,13 +55,13 @@ kubectl create namespace trivy-system --dry-run=client -o yaml | sed '/name: tri
   labels:\
     pod-security.kubernetes.io/enforce: privileged' > $infraDir/trivy-operator/templates/namespace.yaml
 
-sed -i '' '/clusterIP: None/d' "$infraDir/trivy-operator/templates/monitor/service.yaml"
+#sed -i '' '/clusterIP: None/d' "$infraDir/trivy-operator/templates/monitor/service.yaml"
 
 echo " - Updating Local Path Storage Provider"
 echo "   - Setting Talos data disk path /var/mnt/data"
 echo "   - Setting namespace to have privileged access"
 echo "   - Setting local-path-provider to be default storage class"
-curl https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.32/deploy/local-path-storage.yaml \
+curl https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.37/deploy/local-path-storage.yaml \
 | sed 's|/opt/local-path-provisioner|/var/mnt/data|g' \
 | sed '/name: local-path-storage$/a\
   labels:\
@@ -69,8 +70,8 @@ curl https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.32/de
   annotations:\
     storageclass.kubernetes.io/is-default-class: "true"' > $infraDir/local-path-storage.yaml
 
-echo " - Updating kubelet-serving-cert-approver"
-curl https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml > $infraDir/kubelet-serving-cert-approver.yaml
+#echo " - Updating kubelet-serving-cert-approver"
+#curl https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/main/deploy/standalone-install.yaml > $infraDir/kubelet-serving-cert-approver.yaml
 
 echo " - Updating metrics-server"
 helm template metrics-server metrics-server/metrics-server -n metrics-system --create-namespace --include-crds -f metrics-values.yaml --output-dir $infraDir

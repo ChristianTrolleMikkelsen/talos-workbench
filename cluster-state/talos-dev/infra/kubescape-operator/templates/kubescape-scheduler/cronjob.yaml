@@ -8,11 +8,11 @@ metadata:
   annotations:
     
   labels:
-    helm.sh/chart: kubescape-operator-1.30.0
+    helm.sh/chart: kubescape-operator-1.40.4
     app.kubernetes.io/name: kubescape-operator
     app.kubernetes.io/instance: kubescape
     app.kubernetes.io/component: kubescape-scheduler
-    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/version: "1.40.4"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: kubescape
     app: kubescape-scheduler
@@ -31,11 +31,11 @@ spec:
           annotations:
             
           labels:
-            helm.sh/chart: kubescape-operator-1.30.0
+            helm.sh/chart: kubescape-operator-1.40.4
             app.kubernetes.io/name: kubescape-operator
             app.kubernetes.io/instance: kubescape
             app.kubernetes.io/component: kubescape-scheduler
-            app.kubernetes.io/version: "1.30.0"
+            app.kubernetes.io/version: "1.40.4"
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/part-of: kubescape
             app: kubescape-scheduler
@@ -49,7 +49,7 @@ spec:
               type: RuntimeDefault
           containers:
           - name: kubescape-scheduler
-            image: "quay.io/kubescape/http-request:v0.2.16"
+            image: "quay.io/kubescape/http-request:v0.2.23"
             imagePullPolicy: IfNotPresent
             resources:
               limits:
@@ -63,6 +63,10 @@ spec:
               readOnlyRootFilesystem: true
               runAsNonRoot: true
               runAsUser: 100
+              runAsGroup: 100
+              capabilities:
+                drop:
+                  - ALL
             args:
               - -method=post
               - -scheme=http
@@ -82,7 +86,9 @@ spec:
             kubernetes.io/os: linux
           affinity:
           tolerations:
+          
           volumes:
           - name: kubescape-scheduler
             configMap:
               name: kubescape-scheduler
+

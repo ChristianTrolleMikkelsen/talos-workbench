@@ -6,6 +6,7 @@ metadata:
   name: hubble-ui
   labels:
     app.kubernetes.io/part-of: cilium
+    helm.sh/chart: cilium-1.20.2
 
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -15,3 +16,4 @@ subjects:
 - kind: ServiceAccount
   name: "hubble-ui"
   namespace: kube-system
+

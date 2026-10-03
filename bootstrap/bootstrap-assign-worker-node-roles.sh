@@ -21,8 +21,9 @@ done
 
 echo " - Assigning worker roles to nodes..."
 
-nodes=$(kubectl get nodes --selector='!node-role.kubernetes.io/control-plane,!node-role.kubernetes.io/worker' -o json | jq -r '.items[].metadata.name')
+#nodes=$(kubectl get nodes --selector='!node-role.kubernetes.io/control-plane,!node-role.kubernetes.io/worker' -o json | jq -r '.items[].metadata.name')
 
+nodes=$(kubectl get nodes -o name | grep worker | cut -d/ -f2)
 for node in $nodes; do
   echo "    - $node"
   kubectl label node $node node-role.kubernetes.io/worker=
@@ -32,5 +33,11 @@ echo " - Assigning state role to first node..."
 first_node=$(echo "$nodes" | head -n 1)
 kubectl label node $first_node node-role.kubernetes.io/state=
 
+nodes=$(kubectl get nodes -o name | grep game | cut -d/ -f2)
+for node in $nodes; do
+  echo "    - $node"
+  kubectl label node $node node-role.kubernetes.io/game=
+done
+
 kubectl get nodes --no-headers
-echo " - Worker and state roles assigned."
+echo " - Worker, state and game roles assigned."

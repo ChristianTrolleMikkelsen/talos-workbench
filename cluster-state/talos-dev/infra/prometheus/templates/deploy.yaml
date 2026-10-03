@@ -7,8 +7,8 @@ metadata:
     app.kubernetes.io/component: server
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/instance: prometheus
-    app.kubernetes.io/version: v3.8.1
-    helm.sh/chart: prometheus-28.0.0
+    app.kubernetes.io/version: v3.15.0
+    helm.sh/chart: prometheus-29.35.0
     app.kubernetes.io/part-of: prometheus
   name: prometheus-server
   namespace: monitoring
@@ -25,19 +25,21 @@ spec:
   revisionHistoryLimit: 10
   template:
     metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: prometheus-server
       labels:
         app.kubernetes.io/component: server
         app.kubernetes.io/name: prometheus
         app.kubernetes.io/instance: prometheus
-        app.kubernetes.io/version: v3.8.1
-        helm.sh/chart: prometheus-28.0.0
+        app.kubernetes.io/version: v3.15.0
+        helm.sh/chart: prometheus-29.35.0
         app.kubernetes.io/part-of: prometheus
     spec:
       enableServiceLinks: true
       serviceAccountName: prometheus-server
       containers:
         - name: prometheus-server-configmap-reload
-          image: "quay.io/prometheus-operator/prometheus-config-reloader:v0.87.1"
+          image: "quay.io/prometheus-operator/prometheus-config-reloader:v0.94.1"
           imagePullPolicy: "IfNotPresent"
           args:
             - --watched-dir=/etc/config
@@ -65,7 +67,7 @@ spec:
               readOnly: true
 
         - name: prometheus-server
-          image: "quay.io/prometheus/prometheus:v3.8.1"
+          image: "quay.io/prometheus/prometheus:v3.15.0"
           imagePullPolicy: "IfNotPresent"
           args:
             - --storage.tsdb.retention.time=15d
@@ -119,3 +121,4 @@ spec:
         - name: storage-volume
           persistentVolumeClaim:
             claimName: prometheus-server
+

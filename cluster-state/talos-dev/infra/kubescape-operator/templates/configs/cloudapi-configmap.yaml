@@ -8,11 +8,11 @@ metadata:
   annotations:
     
   labels:
-    helm.sh/chart: kubescape-operator-1.30.0
+    helm.sh/chart: kubescape-operator-1.40.4
     app.kubernetes.io/name: kubescape-operator
     app.kubernetes.io/instance: kubescape
     app.kubernetes.io/component: ks-cloud-config
-    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/version: "1.40.4"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: kubescape
     app: ks-cloud-config
@@ -33,7 +33,6 @@ data:
       "namespace": "kubescape",
       "imageVulnerabilitiesScanningEnabled": true,
       "postureScanEnabled": true,
-      "otelCollector": false,
       "nodeAgent": "true",
       "maxImageSize": 5.36870912e+09,
       "maxSBOMSize": 2.097152e+07,
@@ -41,8 +40,11 @@ data:
       "scanTimeout": "5m",
       "scanEmbeddedSBOMs": true,
       "vexGeneration": false,
+      "cveMatchingMode": "adaptive",
       "useDefaultMatchers": false,
       "storeFilteredSbom": false,
       "continuousPostureScan": true,
-      "relevantImageVulnerabilitiesConfiguration": "enable"
+      "relevantImageVulnerabilitiesConfiguration": "enable",
+      "riskAcceptance": false
     }
+

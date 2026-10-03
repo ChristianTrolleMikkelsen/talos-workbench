@@ -7,10 +7,10 @@ metadata:
   namespace: spegel-system
   labels:
     app.kubernetes.io/component: cleanup
-    helm.sh/chart: spegel-0.6.0
+    helm.sh/chart: spegel-0.7.4
     app.kubernetes.io/name: spegel
     app.kubernetes.io/instance: spegel
-    app.kubernetes.io/version: "v0.6.0"
+    app.kubernetes.io/version: "v0.7.4"
     app.kubernetes.io/managed-by: Helm
   annotations:
     helm.sh/hook: "post-delete"
@@ -27,6 +27,7 @@ spec:
     - name: readiness
       port: 8080
       protocol: TCP
+
 ---
 # Source: spegel/templates/post-delete-hook.yaml
 apiVersion: apps/v1
@@ -36,10 +37,10 @@ metadata:
   namespace: spegel-system
   labels:
     app.kubernetes.io/component: cleanup
-    helm.sh/chart: spegel-0.6.0
+    helm.sh/chart: spegel-0.7.4
     app.kubernetes.io/name: spegel
     app.kubernetes.io/instance: spegel
-    app.kubernetes.io/version: "v0.6.0"
+    app.kubernetes.io/version: "v0.7.4"
     app.kubernetes.io/managed-by: Helm
   annotations:
     helm.sh/hook: "post-delete"
@@ -63,7 +64,7 @@ spec:
       priorityClassName: system-node-critical
       containers:
       - name: cleanup
-        image: "ghcr.io/spegel-org/spegel@sha256:82f5dd969ed74e3a9cfd6284045099a161778a0d85f9e01a234a62f15eb9d696"
+        image: "ghcr.io/spegel-org/spegel@sha256:26c60b05e08ac738e8442bc389c5780bff0e1d8153956e45d810a2f1008cf56f"
         imagePullPolicy: IfNotPresent
         args:
           - cleanup
@@ -92,6 +93,7 @@ spec:
           operator: Exists
         - effect: NoSchedule
           operator: Exists
+
 ---
 # Source: spegel/templates/post-delete-hook.yaml
 apiVersion: v1
@@ -101,10 +103,10 @@ metadata:
   namespace: spegel-system
   labels:
     app.kubernetes.io/component: cleanup-wait
-    helm.sh/chart: spegel-0.6.0
+    helm.sh/chart: spegel-0.7.4
     app.kubernetes.io/name: spegel
     app.kubernetes.io/instance: spegel
-    app.kubernetes.io/version: "v0.6.0"
+    app.kubernetes.io/version: "v0.7.4"
     app.kubernetes.io/managed-by: Helm
   annotations:
     helm.sh/hook: "post-delete"
@@ -113,10 +115,11 @@ metadata:
 spec:
   containers:
     - name: cleanup-wait
-      image: "ghcr.io/spegel-org/spegel@sha256:82f5dd969ed74e3a9cfd6284045099a161778a0d85f9e01a234a62f15eb9d696"
+      image: "ghcr.io/spegel-org/spegel@sha256:26c60b05e08ac738e8442bc389c5780bff0e1d8153956e45d810a2f1008cf56f"
       imagePullPolicy: IfNotPresent
       args:
         - cleanup-wait
         - --probe-endpoint=spegel-cleanup.spegel-system.svc.cluster.local.:8080
   restartPolicy: Never
   terminationGracePeriodSeconds: 0
+

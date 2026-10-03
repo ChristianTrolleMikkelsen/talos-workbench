@@ -6,10 +6,10 @@ metadata:
   name: trivy-operator
   namespace: trivy-system
   labels:
-    helm.sh/chart: trivy-operator-0.31.0
+    helm.sh/chart: trivy-operator-0.36.0
     app.kubernetes.io/name: trivy-operator
     app.kubernetes.io/instance: trivy-operator
-    app.kubernetes.io/version: "0.29.0"
+    app.kubernetes.io/version: "0.34.0"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -21,6 +21,8 @@ spec:
       app.kubernetes.io/instance: trivy-operator
   template:
     metadata:
+      annotations:
+        checksum/config: a842092866816f509a7693aa7ec6d24da4c26a3cee77a4bb2162c2f5fb9178e9
       labels:
         app.kubernetes.io/name: trivy-operator
         app.kubernetes.io/instance: trivy-operator
@@ -29,7 +31,7 @@ spec:
       automountServiceAccountToken: true
       containers:
         - name: "trivy-operator"
-          image: "mirror.gcr.io/aquasec/trivy-operator:0.29.0"
+          image: "mirror.gcr.io/aquasec/trivy-operator:0.34.0"
           imagePullPolicy: IfNotPresent
           env:
             - name: OPERATOR_NAMESPACE
@@ -82,3 +84,4 @@ spec:
           name: cache-policies
       nodeSelector:
         node-role.kubernetes.io/state: ""
+

@@ -5,10 +5,10 @@ kind: ClusterRole
 metadata:
   name: alloy
   labels:
-    helm.sh/chart: alloy-1.5.1
+    helm.sh/chart: alloy-1.13.0
     app.kubernetes.io/name: alloy
     app.kubernetes.io/instance: alloy
-    app.kubernetes.io/version: "v1.12.1"
+    app.kubernetes.io/version: "v1.20.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: alloy
     app.kubernetes.io/component: rbac
@@ -102,7 +102,21 @@ rules:
     - ""
     resources:
     - nodes
-    - nodes/proxy
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - ""
+    resources:
+    - nodes/pods
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - ""
+    resources:
     - nodes/metrics
     verbs:
     - get
@@ -112,6 +126,7 @@ rules:
     - /metrics
     verbs:
     - get
+
 ---
 # Source: alloy/templates/rbac.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -119,10 +134,10 @@ kind: ClusterRoleBinding
 metadata:
   name: alloy
   labels:
-    helm.sh/chart: alloy-1.5.1
+    helm.sh/chart: alloy-1.13.0
     app.kubernetes.io/name: alloy
     app.kubernetes.io/instance: alloy
-    app.kubernetes.io/version: "v1.12.1"
+    app.kubernetes.io/version: "v1.20.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: alloy
     app.kubernetes.io/component: rbac
@@ -134,3 +149,4 @@ subjects:
   - kind: ServiceAccount
     name: alloy
     namespace: monitoring
+

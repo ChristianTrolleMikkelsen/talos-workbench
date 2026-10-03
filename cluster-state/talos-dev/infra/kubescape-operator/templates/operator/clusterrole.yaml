@@ -7,11 +7,11 @@ metadata:
   annotations:
     
   labels:
-    helm.sh/chart: kubescape-operator-1.30.0
+    helm.sh/chart: kubescape-operator-1.40.4
     app.kubernetes.io/name: kubescape-operator
     app.kubernetes.io/instance: kubescape
     app.kubernetes.io/component: operator
-    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/version: "1.40.4"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: kubescape
     app: operator
@@ -21,6 +21,9 @@ rules:
   - apiGroups: [""]
     resources: ["pods", "nodes", "namespaces", "configmaps", "services"]
     verbs: ["get", "watch", "list"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["get", "watch", "list"]
@@ -34,7 +37,7 @@ rules:
     resources: ["vulnerabilitymanifests", "vulnerabilitymanifestsummaries", "workloadconfigurationscans", "workloadconfigurationscansummaries", "openvulnerabilityexchangecontainers", "containerprofiles", "sbomsyfts"]
     verbs: ["get", "watch", "list", "delete"]
   - apiGroups: ["kubescape.io"]
-    resources: ["runtimerulealertbindings"]
+    resources: ["runtimerulealertbindings", "rules"]
     verbs: ["list", "watch", "get"]
   - apiGroups: ["kubescape.io"]
     resources: ["servicesscanresults"]
@@ -45,3 +48,4 @@ rules:
   - apiGroups: ["kubescape.io"]
     resources: ["operatorcommands/status"]
     verbs: ["get", "watch", "list", "update", "patch"]
+

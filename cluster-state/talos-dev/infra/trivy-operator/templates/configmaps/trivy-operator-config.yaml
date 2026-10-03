@@ -6,10 +6,10 @@ metadata:
   name: trivy-operator-config
   namespace: trivy-system
   labels:
-    helm.sh/chart: trivy-operator-0.31.0
+    helm.sh/chart: trivy-operator-0.36.0
     app.kubernetes.io/name: trivy-operator
     app.kubernetes.io/instance: trivy-operator
-    app.kubernetes.io/version: "0.29.0"
+    app.kubernetes.io/version: "0.34.0"
     app.kubernetes.io/managed-by: Helm
 data:
   OPERATOR_LOG_DEV_MODE: "false"
@@ -53,3 +53,4 @@ data:
   TRIVY_SERVER_HEALTH_CHECK_CACHE_EXPIRATION: "10h"
   OPERATOR_MERGE_RBAC_FINDING_WITH_CONFIG_AUDIT: "false"
   OPERATOR_CLUSTER_COMPLIANCE_ENABLED: "true"
+

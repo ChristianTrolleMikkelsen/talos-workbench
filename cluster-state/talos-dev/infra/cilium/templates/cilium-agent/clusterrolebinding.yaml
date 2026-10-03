@@ -6,6 +6,7 @@ metadata:
   name: cilium
   labels:
     app.kubernetes.io/part-of: cilium
+    helm.sh/chart: cilium-1.20.2
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -14,3 +15,4 @@ subjects:
 - kind: ServiceAccount
   name: "cilium"
   namespace: kube-system
+

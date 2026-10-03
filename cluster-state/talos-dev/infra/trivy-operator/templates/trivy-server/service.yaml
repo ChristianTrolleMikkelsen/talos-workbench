@@ -19,3 +19,4 @@ spec:
       port: 4954
       targetPort: 4954
   sessionAffinity: ClientIP
+

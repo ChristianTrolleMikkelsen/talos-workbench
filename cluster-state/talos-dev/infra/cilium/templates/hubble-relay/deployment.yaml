@@ -9,6 +9,7 @@ metadata:
     k8s-app: hubble-relay
     app.kubernetes.io/name: hubble-relay
     app.kubernetes.io/part-of: cilium
+    helm.sh/chart: cilium-1.20.2
 
 spec:
   replicas: 1
@@ -26,6 +27,7 @@ spec:
         k8s-app: hubble-relay
         app.kubernetes.io/name: hubble-relay
         app.kubernetes.io/part-of: cilium
+        helm.sh/chart: cilium-1.20.2
     spec:
       securityContext:
         fsGroup: 65532
@@ -38,12 +40,13 @@ spec:
             capabilities:
               drop:
               - ALL
+            readOnlyRootFilesystem: true
             runAsGroup: 65532
             runAsNonRoot: true
             runAsUser: 65532
             seccompProfile:
               type: RuntimeDefault
-          image: "quay.io/cilium/hubble-relay:v1.18.5@sha256:17212962c92ff52384f94e407ffe3698714fcbd35c7575f67f24032d6224e446"
+          image: "quay.io/cilium/hubble-relay:v1.20.2@sha256:d309c977870e9dbede7122a10eee09a4c9d66685e8d52af62d9c3c113f815b0f"
           imagePullPolicy: IfNotPresent
           command:
             - hubble-relay
@@ -85,6 +88,8 @@ spec:
             # Retry more frequently at startup so that it can be considered started more quickly.
             periodSeconds: 3
           volumeMounts:
+          - name: tmp-volume
+            mountPath: /tmp
           - name: config
             mountPath: /etc/hubble-relay
             readOnly: true
@@ -108,6 +113,8 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
       volumes:
+      - name: tmp-volume
+        emptyDir: {}
       - name: config
         configMap:
           name: hubble-relay-config
@@ -128,3 +135,5 @@ spec:
                   path: client.key
                 - key: ca.crt
                   path: hubble-server-ca.crt
+      
+

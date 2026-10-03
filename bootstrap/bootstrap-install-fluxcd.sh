@@ -8,13 +8,14 @@ usage() {
 clusterName=$1
 
 #brew install fluxcd/tap/flux
+curl -s https://fluxcd.io/install.sh | bash
 
 #curl -fsSL https://proton.me/download/pass-cli/install.sh | bash
 
 kubectl get pods -A
 
 flux bootstrap github \
-  --owner=$GITHUB_USER \
+  --owner=ChristianTrolleMikkelsen \
   --repository=talos-workbench \
   --branch=main \
   --path=./cluster-state/$clusterName \

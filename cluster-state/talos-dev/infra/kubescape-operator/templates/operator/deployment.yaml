@@ -8,11 +8,11 @@ metadata:
   annotations:
     
   labels:
-    helm.sh/chart: kubescape-operator-1.30.0
+    helm.sh/chart: kubescape-operator-1.40.4
     app.kubernetes.io/name: kubescape-operator
     app.kubernetes.io/instance: kubescape
     app.kubernetes.io/component: operator
-    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/version: "1.40.4"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: kubescape
     app: operator
@@ -36,17 +36,17 @@ spec:
     metadata:
       annotations:
         
-        checksum/operator-config: df6b7d7f1e5c1c5638e84eb84d634ffa07add0025b557752a7e8ee405d45d7ad
+        checksum/operator-config: 8d56a18aa0f5f248d36ba13e9fc12687ab36d65483a7369b9d020ece4cecf1e3
         checksum/cloud-secret: 192498af36fa8b505f01b472407fcc09b948e1259f80663d34f3f3885cdf0d25
-        checksum/cloud-config: 6a6fa5c4e03cfff5dda70cb3b1cbdc803ee0d20b175e7bb06a1eb17c93d5321f
-        checksum/capabilities-config: 7b86f4e331d180b8377302e6a3e43e012a36a886d223480e3ab3ae4c8d4038ca
+        checksum/cloud-config: 600aef8c19f11f50c49aa077b2bf72fb33d4e6e6594e88f0e70f2e5cb812b459
+        checksum/capabilities-config: 6543f6b088e5eac922039647508af3610a78785eef36819b70a78bbfec5c6784
         checksum/matching-rules-config: 7732c83da6cd6962f78ef323206eba8810b7a4fa3f21d1608d9c083428a6eb8f
       labels:
-        helm.sh/chart: kubescape-operator-1.30.0
+        helm.sh/chart: kubescape-operator-1.40.4
         app.kubernetes.io/name: kubescape-operator
         app.kubernetes.io/instance: kubescape
         app.kubernetes.io/component: operator
-        app.kubernetes.io/version: "1.30.0"
+        app.kubernetes.io/version: "1.40.4"
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/part-of: kubescape
         app: operator
@@ -58,15 +58,19 @@ spec:
         seccompProfile:
           type: RuntimeDefault
         runAsUser: 65532
+        runAsGroup: 65532
         fsGroup: 65532
       containers:
         - name: operator
-          image: "quay.io/kubescape/operator:v0.2.119"
+          image: "quay.io/kubescape/operator:v0.2.169"
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
             runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
           ports:
             - name: "trigger-port"
               containerPort: 4002
@@ -102,16 +106,11 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: HELM_RELEASE
-              value: kubescape-operator-1.30.0
+              value: kubescape-operator-1.40.4
             - name: GOMEMLIMIT
               valueFrom:
                 resourceFieldRef:
                   resource: limits.memory
-                  divisor: '1'
-            - name: GOMAXPROCS
-              valueFrom:
-                resourceFieldRef:
-                  resource: limits.cpu
                   divisor: '1'
             - name: KS_LOGGER_LEVEL
               value: "info"
@@ -148,7 +147,7 @@ spec:
             secretName: cloud-secret
         - name: tls-certs
           secret:
-            secretName: kubescape-admission-webhook.kubescape.svc-kubescape-tls-pair
+            secretName: kubescape-admission-webhook-tls
         - name: tmp-dir
           emptyDir: {}
         - name: ks-cloud-config
@@ -181,3 +180,5 @@ spec:
         kubernetes.io/os: linux
       affinity:
       tolerations:
+      
+

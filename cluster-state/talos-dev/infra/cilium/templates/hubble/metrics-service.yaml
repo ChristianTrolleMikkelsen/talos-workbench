@@ -9,6 +9,7 @@ metadata:
     k8s-app: hubble
     app.kubernetes.io/name: hubble
     app.kubernetes.io/part-of: cilium
+    helm.sh/chart: cilium-1.20.2
 
   annotations:
     prometheus.io/scrape: "true"
@@ -23,3 +24,4 @@ spec:
     targetPort: hubble-metrics
   selector:
     k8s-app: cilium
+

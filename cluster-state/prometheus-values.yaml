@@ -13,7 +13,7 @@ server:
     node-role.kubernetes.io/state: ""
 
 ##Drop all configs as we want Alloy to manage all scrapes
-scrapeConfigs: []
+scrapeConfigs:
 
 alertmanager:
   ## If false, alertmanager will not be installed

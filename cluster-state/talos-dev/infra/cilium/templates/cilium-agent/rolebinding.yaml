@@ -7,6 +7,7 @@ metadata:
   namespace: kube-system
   labels:
     app.kubernetes.io/part-of: cilium
+    helm.sh/chart: cilium-1.20.2
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -15,6 +16,7 @@ subjects:
   - kind: ServiceAccount
     name: "cilium"
     namespace: kube-system
+
 ---
 # Source: cilium/templates/cilium-agent/rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -24,6 +26,7 @@ metadata:
   namespace: "cilium-secrets"
   labels:
     app.kubernetes.io/part-of: cilium
+    helm.sh/chart: cilium-1.20.2
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -32,3 +35,4 @@ subjects:
 - kind: ServiceAccount
   name: "cilium"
   namespace: kube-system
+

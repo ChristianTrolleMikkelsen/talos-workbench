@@ -8,11 +8,11 @@ metadata:
   annotations:
     
   labels:
-    helm.sh/chart: kubescape-operator-1.30.0
+    helm.sh/chart: kubescape-operator-1.40.4
     app.kubernetes.io/name: kubescape-operator
     app.kubernetes.io/instance: kubescape
     app.kubernetes.io/component: operator
-    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/version: "1.40.4"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: kubescape
     app: operator
@@ -27,5 +27,29 @@ data:
       "triggersecurityframework": true,
       "podScanGuardTime": "1h",
       "excludeJsonPaths":null,
-      "httpExporterConfig":{"maxAlertsPerMinute":1000,"method":"POST","url":"http://synchronizer:8089/apis/v1/kubescape.io"}
+      "nodeAgentAutoscaler": {
+        "enabled": false,
+        "nodeGroupLabel": "node.kubernetes.io/instance-type",
+        "resourcePercentages": {
+          "requestCPU": 2,
+          "requestMemory": 2,
+          "limitCPU": 5,
+          "limitMemory": 5
+        },
+        "minResources": {
+          "cpu": "100m",
+          "memory": "600Mi"
+        },
+        "maxResources": {
+          "cpu": "2000m",
+          "memory": "4Gi"
+        },
+        "reconcileInterval": "5m",
+        "templatePath": "/etc/templates/daemonset-template.yaml",
+        "operatorDeploymentName": "operator",
+        "goMemLimitPercentage": 0.8,
+        "seLinuxType": "spc_t",
+        "bottlerocketAutoDetect": true
+      }
     }
+

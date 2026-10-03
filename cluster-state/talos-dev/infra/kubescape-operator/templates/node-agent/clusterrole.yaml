@@ -7,11 +7,11 @@ metadata:
   annotations:
     
   labels:
-    helm.sh/chart: kubescape-operator-1.30.0
+    helm.sh/chart: kubescape-operator-1.40.4
     app.kubernetes.io/name: kubescape-operator
     app.kubernetes.io/instance: kubescape
     app.kubernetes.io/component: node-agent
-    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/version: "1.40.4"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: kubescape
     app: node-agent
@@ -23,7 +23,7 @@ rules:
   verbs: ["get", "watch", "list"]
 - apiGroups: [""]
   resources: ["pods"]
-  verbs: ["get", "watch", "list", "delete"]
+  verbs: ["get", "watch", "list"]
 - apiGroups: [""]
   resources: ["events"]
   verbs: ["get", "watch", "list"]
@@ -33,8 +33,8 @@ rules:
 - apiGroups: ["apps"]
   resources: ["deployments", "daemonsets", "statefulsets", "replicasets"]
   verbs: ["get", "watch", "list"]
-- apiGroups: ["spdx.softwarecomposition.kubescape.io"]
-  resources: ["applicationprofiles", "networkneighborhoods", "seccompprofiles"]
+- apiGroups: ["kubescape.io"]
+  resources: ["seccompprofiles"]
   verbs: ["get", "watch", "list"]
 - apiGroups: ["spdx.softwarecomposition.kubescape.io"]
   resources: ["containerprofiles", "sbomsyfts"]
@@ -54,3 +54,17 @@ rules:
 - apiGroups: ["kubescape.io"]
   resources: ["rules"]
   verbs: ["list", "watch"]
+- apiGroups: ["hostdata.kubescape.cloud"]
+  resources:
+    - osreleasefiles
+    - kernelversions
+    - linuxsecurityhardeningstatuses
+    - openportslists
+    - linuxkernelvariables
+    - kubeletinfos
+    - kubeproxyinfos
+    - controlplaneinfos
+    - cloudproviderinfos
+    - cniinfos
+  verbs: ["create", "get", "update", "patch", "list", "watch"]
+

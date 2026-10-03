@@ -147,8 +147,6 @@ spec:
           preferredDuringSchedulingIgnoredDuringExecution:
           - preference:
               matchExpressions:
-              - key: node-role.kubernetes.io/master
-                operator: DoesNotExist
               - key: node-role.kubernetes.io/control-plane
                 operator: DoesNotExist
             weight: 100
@@ -193,6 +191,12 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
           runAsNonRoot: true
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /healthz
+            port: health
+          periodSeconds: 10
       priorityClassName: system-cluster-critical
       securityContext:
         fsGroup: 65534

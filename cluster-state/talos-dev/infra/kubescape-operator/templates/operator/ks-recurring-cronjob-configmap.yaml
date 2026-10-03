@@ -8,11 +8,11 @@ metadata:
   annotations:
     
   labels:
-    helm.sh/chart: kubescape-operator-1.30.0
+    helm.sh/chart: kubescape-operator-1.40.4
     app.kubernetes.io/name: kubescape-operator
     app.kubernetes.io/instance: kubescape
     app.kubernetes.io/component: ks-cloud-config
-    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/version: "1.40.4"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: kubescape
     app: ks-cloud-config
@@ -48,7 +48,7 @@ data:
                   type: RuntimeDefault
               containers:
               - name: kubescape-scheduler
-                image: "quay.io/kubescape/http-request:v0.2.16"
+                image: "quay.io/kubescape/http-request:v0.2.23"
                 imagePullPolicy: IfNotPresent
                 securityContext:
                   allowPrivilegeEscalation: false
@@ -85,3 +85,5 @@ data:
                 - name: "request-body-volume" # placeholder
                   configMap:
                     name: kubescape-scheduler
+
+

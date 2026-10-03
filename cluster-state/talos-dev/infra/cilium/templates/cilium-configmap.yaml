@@ -30,13 +30,11 @@ data:
 
   # If you want to run cilium in debug mode change this value to true
   debug: "false"
-  debug-verbose: ""
   metrics-sampling-interval: "5m"
   # The agent can be put into the following three policy enforcement modes
   # default, always and never.
   # https://docs.cilium.io/en/latest/security/policy/intro/#policy-enforcement-modes
   enable-policy: "default"
-  policy-cidr-match-mode: ""
   # If you want metrics enabled in all of your Cilium agents, set the port for
   # which the Cilium agents will have their metrics exposed.
   # This option deprecates the "prometheus-serve-addr" in the
@@ -101,6 +99,10 @@ data:
   bpf-lb-map-max: "65536"
   bpf-lb-external-clusterip: "false"
   bpf-lb-source-range-all-types: "false"
+# When Gateway API is enabled this is forced to "true" so per-backend weights
+# on TCPRoute/UDPRoute take effect (Maglev honors the LB algorithm annotation only
+# when enabled). Paired with `bpf-lb-sock-hostns-only`, which is forced "true"
+# for the same reason.
   bpf-lb-algorithm-annotation: "false"
   bpf-lb-mode-annotation: "false"
 
@@ -128,7 +130,7 @@ data:
 
   # Name of the cluster. Only relevant when building a mesh of clusters.
   cluster-name: "default"
-  # Unique ID of the cluster. Must be unique across all conneted clusters and
+  # Unique ID of the cluster. Must be unique across all connected clusters and
   # in the range of 1 and 255. Only relevant when building a mesh of clusters.
   cluster-id: "0"
 
@@ -142,6 +144,7 @@ data:
   tunnel-protocol: "vxlan"
   tunnel-source-port-range: "0-0"
   service-no-backend-response: "reject"
+  policy-deny-response: "none"
 
 
   # Enables L7 proxy for L7 policy enforcement and visibility
@@ -164,16 +167,21 @@ data:
 
 
 
+  enable-host-firewall: "false"
+  # List of devices used to attach bpf_host.o (implements BPF NodePort,
+  # host-firewall and BPF masquerading)
+  devices: ""
+
   kube-proxy-replacement: "false"
+  enable-no-service-endpoints-routable: "true"
   bpf-lb-sock: "false"
-  enable-node-port: "true"
-  nodeport-addresses: ""
   enable-health-check-nodeport: "true"
+  enable-dynamic-source-lookup-nodeport: "false"
   enable-health-check-loadbalancer-ip: "false"
   node-port-bind-protection: "true"
   enable-auto-protect-node-port-range: "true"
   bpf-lb-acceleration: "disabled"
-  enable-svc-source-range-check: "true"
+  enable-service-topology: "false"
   enable-l2-neigh-discovery: "false"
   k8s-require-ipv4-pod-cidr: "false"
   k8s-require-ipv6-pod-cidr: "false"
@@ -217,8 +225,6 @@ data:
   hubble-redact-http-urlquery: "true"
   # Enables redaction of the http user info in flows
   hubble-redact-http-userinfo: "true"
-  # Enables redaction of the Kafka API key part in flows
-  hubble-redact-kafka-apikey: "true"
   # An additional address for Hubble server to listen to (e.g. ":4244").
   hubble-listen-address: ":4244"
   hubble-disable-tls: "false"
@@ -236,6 +242,8 @@ data:
   vtep-cidr: ""
   vtep-mask: ""
   vtep-mac: ""
+
+  packetization-layer-pmtud-mode: "blackhole"
   procfs: "/host/proc"
   bpf-root: "/sys/fs/bpf"
   cgroup-root: "/sys/fs/cgroup"
@@ -245,7 +253,7 @@ data:
   remove-cilium-node-taints: "true"
   set-cilium-node-taints: "true"
   set-cilium-is-up-condition: "true"
-  unmanaged-pod-watcher-interval: "15"
+  unmanaged-pod-watcher-interval: "15s"
   # default DNS proxy to transparent mode in non-chaining modes
   dnsproxy-enable-transparent-mode: "true"
   dnsproxy-socket-linger-timeout: "10"
@@ -258,7 +266,7 @@ data:
   tofqdns-preallocate-identities:  "true"
   agent-not-ready-taint-key: "node.cilium.io/agent-not-ready"
 
-  mesh-auth-enabled: "true"
+  mesh-auth-enabled: "false"
   mesh-auth-queue-size: "1024"
   mesh-auth-rotated-identities-queue-size: "1024"
   mesh-auth-gc-interval: "5m0s"
@@ -267,28 +275,44 @@ data:
   proxy-xff-num-trusted-hops-egress: "0"
   proxy-connect-timeout: "2"
   proxy-initial-fetch-timeout: "30"
+  proxy-max-active-downstream-connections: "50000"
   proxy-max-requests-per-connection: "0"
   proxy-max-connection-duration-seconds: "0"
   proxy-idle-timeout-seconds: "60"
   proxy-max-concurrent-retries: "128"
+  proxy-use-original-source-address: "true"
+  proxy-cluster-max-connections: "1024"
+  proxy-cluster-max-pending-requests: "1024"
+  proxy-cluster-max-requests: "1024"
   http-retry-count: "3"
   http-stream-idle-timeout: "300"
+  envoy-node-locality-enabled: "false"
 
   external-envoy-proxy: "true"
   envoy-base-id: "0"
+  envoy-access-log-enabled: "true"
   envoy-access-log-buffer-size: "4096"
   envoy-keep-cap-netbindservice: "false"
+  envoy-xds-mode: "ads"
   max-connected-clusters: "255"
+  clustermesh-cache-ttl: "0s"
   clustermesh-enable-endpoint-sync: "false"
   clustermesh-enable-mcs-api: "false"
-  policy-default-local-cluster: "false"
+  clustermesh-mcs-api-install-crds: "true"
+  clustermesh-default-global-namespace: "true"
+  policy-default-local-cluster: "true"
 
   nat-map-stats-entries: "32"
   nat-map-stats-interval: "30s"
-  enable-internal-traffic-policy: "true"
   enable-lb-ipam: "true"
   enable-non-default-deny-policies: "true"
   enable-source-ip-verification: "true"
+  enable-dynamic-config: "true"
+  enable-drift-checker: "true"
+
+  enable-datapath-plugins: "false"
+  datapath-plugins-state-dir: "/var/run/cilium/plugins"
 
 # Extra config allows adding arbitrary properties to the cilium config.
 # By putting it at the end of the ConfigMap, it's also possible to override existing properties.
+

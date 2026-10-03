@@ -9,10 +9,10 @@ metadata:
   name: headlamp
   namespace: kube-system
   labels:
-    helm.sh/chart: headlamp-0.39.0
+    helm.sh/chart: headlamp-0.45.0
     app.kubernetes.io/name: headlamp
     app.kubernetes.io/instance: headlamp
-    app.kubernetes.io/version: "0.39.0"
+    app.kubernetes.io/version: "0.45.0"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -28,6 +28,7 @@ spec:
     spec:
       serviceAccountName: headlamp
       automountServiceAccountToken: true
+      hostUsers: true
       securityContext:
         {}
       initContainers:
@@ -48,13 +49,15 @@ spec:
             runAsGroup: 101
             runAsNonRoot: true
             runAsUser: 100
-          image: "ghcr.io/headlamp-k8s/headlamp:v0.39.0"
+          image: "ghcr.io/headlamp-k8s/headlamp:v0.45.0"
           imagePullPolicy: IfNotPresent
           
           env:
           args:
             - "-in-cluster"
+            - "-in-cluster-context-name=main"
             - "-plugins-dir=/build/plugins"
+            - "-session-ttl=86400"
             # Check if externalSecret is disabled
           ports:
             - name: http
@@ -64,10 +67,22 @@ spec:
             httpGet:
               path: "/"
               port: http
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
           readinessProbe:
             httpGet:
               path: "/"
               port: http
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
           resources:
             {}
           volumeMounts:
@@ -108,3 +123,4 @@ spec:
         - name: plugin-config
           configMap:
             name: headlamp-plugin-config
+

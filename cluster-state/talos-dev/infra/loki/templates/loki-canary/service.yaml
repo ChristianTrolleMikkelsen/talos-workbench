@@ -6,12 +6,11 @@ metadata:
   name: loki-canary
   namespace: monitoring
   labels:
-    helm.sh/chart: loki-6.49.0
+    helm.sh/chart: loki-18.13.7
     app.kubernetes.io/name: loki
     app.kubernetes.io/instance: loki
-    app.kubernetes.io/version: "3.6.3"
+    app.kubernetes.io/version: "3.7.8"
     app.kubernetes.io/component: canary
-  annotations:
 spec:
   type: ClusterIP
   ports:

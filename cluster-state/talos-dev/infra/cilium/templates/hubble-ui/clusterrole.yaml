@@ -6,21 +6,13 @@ metadata:
   name: hubble-ui
   labels:
     app.kubernetes.io/part-of: cilium
+    helm.sh/chart: cilium-1.20.2
 
 rules:
-- apiGroups:
-  - networking.k8s.io
-  resources:
-  - networkpolicies
-  verbs:
-  - get
-  - list
-  - watch
 - apiGroups:
   - ""
   resources:
   - componentstatuses
-  - endpoints
   - namespaces
   - nodes
   - pods
@@ -37,11 +29,4 @@ rules:
   - get
   - list
   - watch
-- apiGroups:
-  - cilium.io
-  resources:
-  - "*"
-  verbs:
-  - get
-  - list
-  - watch
+

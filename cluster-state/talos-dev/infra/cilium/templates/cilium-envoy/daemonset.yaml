@@ -10,10 +10,12 @@ metadata:
     app.kubernetes.io/part-of: cilium
     app.kubernetes.io/name: cilium-envoy
     name: cilium-envoy
+    helm.sh/chart: cilium-1.20.2
 spec:
   selector:
     matchLabels:
       k8s-app: cilium-envoy
+  
   updateStrategy:
     rollingUpdate:
       maxUnavailable: 2
@@ -21,19 +23,19 @@ spec:
   template:
     metadata:
       annotations:
-        # Set app AppArmor's profile to "unconfined". The value of this annotation
-        # can be modified as long users know which profiles they have available
-        # in AppArmor.
-        container.apparmor.security.beta.kubernetes.io/cilium-envoy: "unconfined"
       labels:
         k8s-app: cilium-envoy
         name: cilium-envoy
         app.kubernetes.io/name: cilium-envoy
         app.kubernetes.io/part-of: cilium
+        helm.sh/chart: cilium-1.20.2
     spec:
+      securityContext:
+        appArmorProfile:
+          type: Unconfined
       containers:
       - name: cilium-envoy
-        image: "quay.io/cilium/cilium-envoy:v1.34.12-1765374555-6a93b0bbba8d6dc75b651cbafeedb062b2997716@sha256:3108521821c6922695ff1f6ef24b09026c94b195283f8bfbfc0fa49356a156e1"
+        image: "quay.io/cilium/cilium-envoy:v1.37.6-1789133542-cbec91f666af0bf742da986d43832932dbb26b82@sha256:af7382699576b9e65e9184efa52eeca0b58aea70ad6e511bf260c91d9f740463"
         imagePullPolicy: IfNotPresent
         command:
         - /usr/bin/cilium-envoy-starter
@@ -42,6 +44,7 @@ spec:
         - '-c /var/run/cilium/envoy/bootstrap-config.json'
         - '--base-id 0'
         - '--log-level info'
+        
         startupProbe:
           httpGet:
             host: "127.0.0.1"
@@ -52,6 +55,7 @@ spec:
           periodSeconds: 2
           successThreshold: 1
           initialDelaySeconds: 5
+          timeoutSeconds: 5
         livenessProbe:
           httpGet:
             host: "127.0.0.1"
@@ -61,6 +65,7 @@ spec:
           periodSeconds: 30
           successThreshold: 1
           failureThreshold: 10
+          initialDelaySeconds: 0
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
@@ -71,7 +76,9 @@ spec:
           periodSeconds: 30
           successThreshold: 1
           failureThreshold: 3
+          initialDelaySeconds: 0
           timeoutSeconds: 5
+
         env:
         - name: K8S_NODE_NAME
           valueFrom:
@@ -83,6 +90,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
+        
         ports:
         - name: envoy-metrics
           containerPort: 9964
@@ -112,12 +120,15 @@ spec:
         - name: bpf-maps
           mountPath: /sys/fs/bpf
           mountPropagation: HostToContainer
+        
       restartPolicy: Always
       priorityClassName: system-node-critical
       serviceAccountName: "cilium-envoy"
       automountServiceAccountToken: true
       terminationGracePeriodSeconds: 1
       hostNetwork: true
+      hostUsers: true
+      
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -166,3 +177,5 @@ spec:
         hostPath:
           path: /sys/fs/bpf
           type: DirectoryOrCreate
+    
+

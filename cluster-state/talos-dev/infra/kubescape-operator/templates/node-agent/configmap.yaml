@@ -8,11 +8,11 @@ metadata:
   annotations:
     
   labels:
-    helm.sh/chart: kubescape-operator-1.30.0
+    helm.sh/chart: kubescape-operator-1.40.4
     app.kubernetes.io/name: kubescape-operator
     app.kubernetes.io/instance: kubescape
     app.kubernetes.io/component: node-agent
-    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/version: "1.40.4"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: kubescape
     app: node-agent
@@ -23,14 +23,13 @@ data:
   config.json: |
     {
         "applicationProfileServiceEnabled": true,
-        "backendStorageEnabled": false,
         "prometheusExporterEnabled": false,
         "runtimeDetectionEnabled": false,
         "httpDetectionEnabled": false,
         "networkServiceEnabled": true,
         "malwareDetectionEnabled": false,
-        "hostMalwareSensorEnabled": false,
-        "hostNetworkSensorEnabled": false,
+        "hostSensorEnabled": true,
+        "hostSensorInterval": "5m",
         "nodeProfileServiceEnabled": false,
         "networkStreamingEnabled": false,
         "maxImageSize": 5.36870912e+09,
@@ -38,6 +37,7 @@ data:
         "sbomGenerationEnabled": true,
         "enableEmbeddedSBOMs": true,
         "seccompServiceEnabled": true,
+        "seccompProfileBackend": "crd",
         "initialDelay": "2m",
         "updateDataPeriod": "10m",
         "nodeProfileInterval": "10m",
@@ -56,5 +56,28 @@ data:
             "ruleCooldownAfterCount": 1,
             "ruleCooldownOnProfileFailure": true,
             "ruleCooldownMaxSize": 20000
-        }
+        },
+        "alertDeduplication": {
+            "bypass": false
+        },
+        "dCapSys": false,
+        "dDns": false,
+        "dExec": false,
+        "dExit": false,
+        "dFork": false,
+        "dHardlink": false,
+        "dHttp": false,
+        "dIouring": false,
+        "dNetwork": false,
+        "dOpen": false,
+        "dPtrace": false,
+        "dRandomx": false,
+        "dSeccomp": false,
+        "dSsh": false,
+        "dSymlink": false,
+        "dKmod": false,
+        "dUnshare": false,
+        "dBpf": false,
+        "dTop": false
     }
+

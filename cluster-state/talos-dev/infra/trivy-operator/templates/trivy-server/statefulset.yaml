@@ -44,7 +44,7 @@ spec:
         runAsUser: 65534
       containers:
         - name: trivy-server
-          image: "mirror.gcr.io/aquasec/trivy:0.66.0"
+          image: "mirror.gcr.io/aquasec/trivy:0.74.0"
           imagePullPolicy: "IfNotPresent"
           securityContext:
             privileged: false
@@ -96,3 +96,4 @@ spec:
           emptyDir: {}
       nodeSelector:
         node-role.kubernetes.io/state: ""
+

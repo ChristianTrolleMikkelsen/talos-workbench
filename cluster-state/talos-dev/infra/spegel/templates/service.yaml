@@ -7,10 +7,10 @@ metadata:
   namespace: spegel-system
   labels:
     app.kubernetes.io/component: metrics
-    helm.sh/chart: spegel-0.6.0
+    helm.sh/chart: spegel-0.7.4
     app.kubernetes.io/name: spegel
     app.kubernetes.io/instance: spegel
-    app.kubernetes.io/version: "v0.6.0"
+    app.kubernetes.io/version: "v0.7.4"
     app.kubernetes.io/managed-by: Helm
 spec:
   selector:
@@ -22,6 +22,7 @@ spec:
       port: 9090
       targetPort: metrics
       protocol: TCP
+
 ---
 # Source: spegel/templates/service.yaml
 apiVersion: v1
@@ -30,10 +31,10 @@ metadata:
   name: spegel-registry
   namespace: spegel-system
   labels:
-    helm.sh/chart: spegel-0.6.0
+    helm.sh/chart: spegel-0.7.4
     app.kubernetes.io/name: spegel
     app.kubernetes.io/instance: spegel
-    app.kubernetes.io/version: "v0.6.0"
+    app.kubernetes.io/version: "v0.7.4"
     app.kubernetes.io/managed-by: Helm
   annotations:
     service.kubernetes.io/topology-mode: "auto"
@@ -49,6 +50,7 @@ spec:
       targetPort: registry
       nodePort: 30021
       protocol: TCP
+
 ---
 # Source: spegel/templates/service.yaml
 apiVersion: v1
@@ -57,10 +59,10 @@ metadata:
   name: spegel-bootstrap
   namespace: spegel-system
   labels:
-    helm.sh/chart: spegel-0.6.0
+    helm.sh/chart: spegel-0.7.4
     app.kubernetes.io/name: spegel
     app.kubernetes.io/instance: spegel
-    app.kubernetes.io/version: "v0.6.0"
+    app.kubernetes.io/version: "v0.7.4"
     app.kubernetes.io/managed-by: Helm
 spec:
   selector:
@@ -69,7 +71,4 @@ spec:
     app.kubernetes.io/instance: spegel
   clusterIP: None
   publishNotReadyAddresses: true
-  ports:
-    - name: router
-      port: 5001
-      protocol: TCP
+

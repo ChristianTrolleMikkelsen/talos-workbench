@@ -9,6 +9,7 @@ metadata:
     k8s-app: cilium
     app.kubernetes.io/part-of: cilium
     app.kubernetes.io/name: cilium-agent
+    helm.sh/chart: cilium-1.20.2
 spec:
   selector:
     matchLabels:
@@ -22,23 +23,21 @@ spec:
       annotations:
         prometheus.io/port: "9962"
         prometheus.io/scrape: "true"
-        # Set app AppArmor's profile to "unconfined". The value of this annotation
-        # can be modified as long users know which profiles they have available
-        # in AppArmor.
-        container.apparmor.security.beta.kubernetes.io/cilium-agent: "unconfined"
-        container.apparmor.security.beta.kubernetes.io/clean-cilium-state: "unconfined"
         kubectl.kubernetes.io/default-container: cilium-agent
       labels:
         k8s-app: cilium
         app.kubernetes.io/name: cilium-agent
         app.kubernetes.io/part-of: cilium
+        helm.sh/chart: cilium-1.20.2
     spec:
       securityContext:
+        appArmorProfile:
+          type: Unconfined
         seccompProfile:
           type: Unconfined
       containers:
       - name: cilium-agent
-        image: "quay.io/cilium/cilium:v1.18.5@sha256:2c92fb05962a346eaf0ce11b912ba434dc10bd54b9989e970416681f4a069628"
+        image: "quay.io/cilium/cilium:v1.20.2@sha256:2939231d0d3e3ebddcd80fffa168b7ddcc78fdf0dc864d1c8c126ff523c54f01"
         imagePullPolicy: IfNotPresent
         command:
         - cilium-agent
@@ -48,7 +47,7 @@ spec:
           httpGet:
             host: "127.0.0.1"
             path: /healthz
-            port: 9879
+            port: health
             scheme: HTTP
             httpHeaders:
             - name: "brief"
@@ -61,7 +60,7 @@ spec:
           httpGet:
             host: "127.0.0.1"
             path: /healthz
-            port: 9879
+            port: health
             scheme: HTTP
             httpHeaders:
             - name: "brief"
@@ -76,7 +75,7 @@ spec:
           httpGet:
             host: "127.0.0.1"
             path: /healthz
-            port: 9879
+            port: health
             scheme: HTTP
             httpHeaders:
             - name: "brief"
@@ -139,6 +138,10 @@ spec:
               command:
               - /cni-uninstall.sh
         ports:
+        - name: health
+          containerPort: 9879
+          hostPort: 9879
+          protocol: TCP
         - name: peer-service
           containerPort: 4244
           hostPort: 4244
@@ -217,7 +220,7 @@ spec:
         
       initContainers:
       - name: config
-        image: "quay.io/cilium/cilium:v1.18.5@sha256:2c92fb05962a346eaf0ce11b912ba434dc10bd54b9989e970416681f4a069628"
+        image: "quay.io/cilium/cilium:v1.20.2@sha256:2939231d0d3e3ebddcd80fffa168b7ddcc78fdf0dc864d1c8c126ff523c54f01"
         imagePullPolicy: IfNotPresent
         command:
         - cilium-dbg
@@ -237,14 +240,20 @@ spec:
         - name: tmp
           mountPath: /tmp
         terminationMessagePolicy: FallbackToLogsOnError
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+            drop:
+              - ALL
       - name: apply-sysctl-overwrites
-        image: "quay.io/cilium/cilium:v1.18.5@sha256:2c92fb05962a346eaf0ce11b912ba434dc10bd54b9989e970416681f4a069628"
+        image: "quay.io/cilium/cilium:v1.20.2@sha256:2939231d0d3e3ebddcd80fffa168b7ddcc78fdf0dc864d1c8c126ff523c54f01"
         imagePullPolicy: IfNotPresent
         env:
         - name: BIN_PATH
           value: /opt/cni/bin
         command:
-        - sh
+        - bash
         - -ec
         # The statically linked Go program binary is invoked to avoid any
         # dependency on utilities like sh that can be missing on certain
@@ -276,7 +285,7 @@ spec:
       # from a privileged container because the mount propagation bidirectional
       # only works from privileged containers.
       - name: mount-bpf-fs
-        image: "quay.io/cilium/cilium:v1.18.5@sha256:2c92fb05962a346eaf0ce11b912ba434dc10bd54b9989e970416681f4a069628"
+        image: "quay.io/cilium/cilium:v1.20.2@sha256:2939231d0d3e3ebddcd80fffa168b7ddcc78fdf0dc864d1c8c126ff523c54f01"
         imagePullPolicy: IfNotPresent
         args:
         - 'mount | grep "/sys/fs/bpf type bpf" || mount -t bpf bpf /sys/fs/bpf'
@@ -292,7 +301,7 @@ spec:
           mountPath: /sys/fs/bpf
           mountPropagation: Bidirectional
       - name: clean-cilium-state
-        image: "quay.io/cilium/cilium:v1.18.5@sha256:2c92fb05962a346eaf0ce11b912ba434dc10bd54b9989e970416681f4a069628"
+        image: "quay.io/cilium/cilium:v1.20.2@sha256:2939231d0d3e3ebddcd80fffa168b7ddcc78fdf0dc864d1c8c126ff523c54f01"
         imagePullPolicy: IfNotPresent
         command:
         - /init-container.sh
@@ -338,11 +347,14 @@ spec:
           mountPath: /var/run/cilium # wait-for-kube-proxy
       # Install the CNI binaries in an InitContainer so we don't have a writable host mount in the agent
       - name: install-cni-binaries
-        image: "quay.io/cilium/cilium:v1.18.5@sha256:2c92fb05962a346eaf0ce11b912ba434dc10bd54b9989e970416681f4a069628"
+        image: "quay.io/cilium/cilium:v1.20.2@sha256:2939231d0d3e3ebddcd80fffa168b7ddcc78fdf0dc864d1c8c126ff523c54f01"
         imagePullPolicy: IfNotPresent
         command:
           - "/install-plugin.sh"
         resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
           requests:
             cpu: 100m
             memory: 10Mi
@@ -363,6 +375,7 @@ spec:
       automountServiceAccountToken: true
       terminationGracePeriodSeconds: 1
       hostNetwork: true
+      hostUsers: true
       
       affinity:
         podAntiAffinity:
@@ -375,8 +388,9 @@ spec:
         kubernetes.io/os: linux
       tolerations:
         - operator: Exists
+      
       volumes:
-        # For sharing configuration between the "config" initContainer and the agent
+      # For sharing configuration between the "config" initContainer and the agent
       - name: tmp
         emptyDir: {}
         # To keep state between restarts / upgrades
@@ -488,3 +502,5 @@ spec:
                 path: server.key
               - key: ca.crt
                 path: client-ca.crt
+      
+

@@ -8,11 +8,11 @@ metadata:
   annotations:
     
   labels:
-    helm.sh/chart: kubescape-operator-1.30.0
+    helm.sh/chart: kubescape-operator-1.40.4
     app.kubernetes.io/name: kubescape-operator
     app.kubernetes.io/instance: kubescape
     app.kubernetes.io/component: storage
-    app.kubernetes.io/version: "1.30.0"
+    app.kubernetes.io/version: "1.40.4"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: kubescape
     app: storage
@@ -32,13 +32,14 @@ spec:
   template:
     metadata:
       annotations:
-        
+        checksum/storage-config: 7a6feb92fb84fcd0529c564eeb29c48cc481974c9967937a83343a237a45b59d
+        checksum/cloud-config: 600aef8c19f11f50c49aa077b2bf72fb33d4e6e6594e88f0e70f2e5cb812b459
       labels:
-        helm.sh/chart: kubescape-operator-1.30.0
+        helm.sh/chart: kubescape-operator-1.40.4
         app.kubernetes.io/name: kubescape-operator
         app.kubernetes.io/instance: kubescape
         app.kubernetes.io/component: storage
-        app.kubernetes.io/version: "1.30.0"
+        app.kubernetes.io/version: "1.40.4"
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/part-of: kubescape
         app: storage
@@ -51,14 +52,18 @@ spec:
         seccompProfile:
           type: RuntimeDefault
         runAsUser: 65532
+        runAsGroup: 65532
         fsGroup: 65532
       containers:
       - name: apiserver
-        image: "quay.io/kubescape/storage:v0.0.233"
+        image: "quay.io/kubescape/storage:v0.0.331"
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
           runAsNonRoot: true
+          capabilities:
+            drop:
+              - ALL
         livenessProbe:
           httpGet:
             path: /livez
@@ -74,11 +79,6 @@ spec:
             valueFrom:
               resourceFieldRef:
                 resource: limits.memory
-                divisor: '1'
-          - name: GOMAXPROCS
-            valueFrom:
-              resourceFieldRef:
-                resource: limits.cpu
                 divisor: '1'
           - name: KS_LOGGER_LEVEL
             value: "info"
@@ -109,6 +109,7 @@ spec:
         kubernetes.io/os: linux
       affinity:
       tolerations:
+      
       volumes:
         - name: "data"
           persistentVolumeClaim:
@@ -127,4 +128,5 @@ spec:
                 path: "config.json"
         - name: "ca-certificates"
           secret:
-            secretName: storage-ca
+            secretName: storage-tls
+

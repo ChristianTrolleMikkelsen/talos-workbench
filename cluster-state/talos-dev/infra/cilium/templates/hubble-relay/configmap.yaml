@@ -20,3 +20,4 @@ data:
     tls-hubble-server-ca-files: /var/lib/hubble-relay/tls/hubble-server-ca.crt
     
     disable-server-tls: true
+
